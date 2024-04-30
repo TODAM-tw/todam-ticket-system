@@ -99,20 +99,5 @@ def render_preview(summerized_ticket_conent: str) -> str:
 
 def get_text():
     return """\
-# Hi There!
-This is a demo of the ToDAM Ticket System.
-
-## How to use?
-
-1. Select a model version to chat with.
-2. Type your message in the text box.
-3. Click on the "Send" button to send the message.
-4. Click on the "Refresh" button to clear the chat history.
-5. Click on the "re-generate" button to re-generate the chat history.
-
-## What is the cost?
-
-- Token Cost $: 0.01 USD
-- Time Cost: 40 (sec)
-- Steps Cost: 5 steps
+# Please click on the "🔄 Refresh Log Segments Records" button to get the latest log segment records.
 """
