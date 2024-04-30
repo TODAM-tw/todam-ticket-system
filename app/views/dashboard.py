@@ -2,6 +2,8 @@ from typing import Any
 
 import gradio as gr
 
+from app.api.mock import get_log_segment
+from app.api.mock import render_logs_summerized_tickets
 
 def build_playground(
     *args: Any, **kwargs: Any,) -> gr.Blocks:
@@ -16,12 +18,15 @@ def build_playground(
         with gr.Row():
 
             with gr.Column(scale=1):
-                log_records = gr.Dropdown(
-                    label="🚘 Log Records",
+                log_segment = gr.Dropdown(
+                    label="🚘 Log Segment Records",
                     info="Select a Record Segment to summerize with 👇🏻",
-                    choices=get_choices(),
                     interactive=True,
                     multiselect=None,
+                )
+                refresh_btn = gr.Button(
+                    variant="secondary",
+                    value="🔄 Refresh Log Segments Records",
                 )
 
                 row_chat_history = gr.Chatbot(
@@ -32,7 +37,7 @@ def build_playground(
                 with gr.Row():
                     summerized_ticket_conent = gr.Textbox(
                         interactive=True,
-                        label="📝 Summerized Ticket Content",
+                        label="📝 Summerized Ticket Content (shift + enter)",
                         render=True,
                         value=get_text(),
                     )
@@ -40,11 +45,11 @@ def build_playground(
                         value=get_text(),
                     )
 
-                retry_btn = gr.Button(
+                regen_summerized_btn = gr.Button(
                     variant="secondary",
                     value="🔄 re-generate",
                 )
-                submit_ticket = gr.Button(
+                submit_summerized_btn = gr.Button(
                     variant="primary",
                     value="🕹️ Submit to Ticket System",
                 )
@@ -63,57 +68,36 @@ def build_playground(
                 "🦶🏻 Steps Cost: 5 steps"
             )
 
+        refresh_btn.click(
+            fn=get_log_segment,
+            inputs=[log_segment],
+            outputs=[log_segment, row_chat_history, summerized_ticket_conent],
+        )
+
         summerized_ticket_conent.change(
             fn=render_preview,
             inputs=summerized_ticket_conent,
             outputs=prev_summerized_ticket_content,
         )
 
-        log_records.change(
+
+        log_segment.change(
             fn=render_logs_summerized_tickets,
-            inputs=log_records,
+            inputs=log_segment,
             outputs=[row_chat_history, summerized_ticket_conent],
         )
 
     return demo
 
-def render_logs_summerized_tickets(log_records):
-    if log_records == "v0.0.1":
-        row_chat_history = (("Hi", "Hello"), ("How are you?", "I am fine, thank you!"))
-        summerized_ticket_conent = "This is a summerized ticket content."
-    elif log_records == "v0.0.2":
-        row_chat_history = (("Hi2", "Hello2"), ("How are you?2", "I am fine, thank you!2"))
-        summerized_ticket_conent = "This is a summerized ticket content.2"
-    elif log_records == "v0.0.3":
-        row_chat_history = (("Hi3", "Hello3"), ("How are you?3", "I am fine, thank you!3"))
-        summerized_ticket_conent = "This is a summerized ticket content.3"
 
-    return row_chat_history, summerized_ticket_conent
+
+
     
-
-
-def render_preview(summerized_ticket_conent: str):
-    return summerized_ticket_conent
-
-def get_choices():
-    return ["v0.0.1", "v0.0.2", "v0.0.3"]    
+def render_preview(summerized_ticket_conent: str) -> str:
+    prev_summerized_ticket_content = summerized_ticket_conent
+    return prev_summerized_ticket_content
 
 def get_text():
     return """\
-# Hi There!
-This is a demo of the ToDAM Ticket System.
-
-## How to use?
-
-1. Select a model version to chat with.
-2. Type your message in the text box.
-3. Click on the "Send" button to send the message.
-4. Click on the "Refresh" button to clear the chat history.
-5. Click on the "re-generate" button to re-generate the chat history.
-
-## What is the cost?
-
-- Token Cost $: 0.01 USD
-- Time Cost: 40 (sec)
-- Steps Cost: 5 steps
+# Please click on the "🔄 Refresh Log Segments Records" button to get the latest log segment records.
 """
