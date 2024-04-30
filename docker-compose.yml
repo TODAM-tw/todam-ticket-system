@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  server:
+    build: 
+      context: .
+    container_name: backend
+    restart: always
+    ports:
+      - "8080:8080"
+    networks:
+      - hugo-network
+
+networks:
+  hugo-network:
+    driver: bridge
