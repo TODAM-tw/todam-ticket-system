@@ -2,8 +2,9 @@ from typing import Any
 
 import gradio as gr
 
-from app.api.mock import get_log_segment
 from app.api.mock import render_logs_summerized_tickets
+from app.cases.segment import get_segments
+from app.cases.segment import get_summerized_ticket_content
 
 def build_playground(
     *args: Any, **kwargs: Any,) -> gr.Blocks:
@@ -69,15 +70,21 @@ def build_playground(
             )
 
         refresh_btn.click(
-            fn=get_log_segment,
+            fn=get_segments,
             inputs=[log_segment],
-            outputs=[log_segment, row_chat_history, summerized_ticket_conent],
+            outputs=[log_segment],
         )
 
         summerized_ticket_conent.change(
             fn=render_preview,
             inputs=summerized_ticket_conent,
             outputs=prev_summerized_ticket_content,
+        )
+
+        row_chat_history.change(
+            fn=get_summerized_ticket_content,
+            inputs=row_chat_history,
+            outputs=summerized_ticket_conent,
         )
 
 
