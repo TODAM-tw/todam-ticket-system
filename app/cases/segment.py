@@ -4,6 +4,7 @@ import os
 import gradio as gr
 import requests
 from dotenv import find_dotenv, load_dotenv
+from requests.models import Response
 
 GROUP_IDS = None
 
@@ -101,23 +102,23 @@ def get_summerized_ticket_content(
         'authorization': f"Bearer {azure_ml_token}"
     }
 
-    response = requests.request("POST", azure_ml_deployed_url, headers=headers, data=payload)
+    response: Response = requests.request("POST", azure_ml_deployed_url, headers=headers, data=payload)
 
+    if response.status_code == 200:
 
-    data: dict = json.loads(response.text)
+        data: dict = json.loads(response.text)
 
-    result: str = json.loads(data["result"])    # result 是一個字串，裡面是一個 JSON 格式的字串
-    transcript = result["transcript"]
-    case_id = result["caseId"]
-    subject = result["subject"]
-    print(subject)
+        result: str = json.loads(data["result"])    # result 是一個字串，裡面是一個 JSON 格式的字串
+        transcript = result["transcript"]
+        case_id = result["caseId"]
+        subject = result["subject"]
 
-    markdown_output = ""
+        transcript_output = ""
 
-    # TODO: Change to HTML
-    for item in result['transcript']:
-        markdown_output += f"```\nSubmitted by {item['Submitted by']}\nContent: {item['content']}\n```\n\n"
+        # TODO: Change to HTML
+        for item in result['transcript']:
+            transcript_output += f"> Submitted by {item['Submitted by']}\n> Content: {item['content']}\n\n\n"
 
-    summerized_ticket_content = f"""\n# Subject: {subject}\n> Case ID: {case_id}\n{markdown_output}"""
-
-    return summerized_ticket_content
+        summerized_ticket_content = f"""\n# Subject: {subject}\n- Case ID: {case_id}\n{transcript_output}\n\n\n"""
+        
+        return summerized_ticket_content

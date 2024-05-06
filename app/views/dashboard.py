@@ -1,9 +1,14 @@
+import json
+import os
 from typing import Any
 
 import gradio as gr
+import requests
+from dotenv import find_dotenv, load_dotenv
+from requests.models import Response
 
-from app.cases.segment import get_segments, get_summerized_ticket_content
 from app.cases.chat_history import render_row_chat_history
+from app.cases.segment import get_segments, get_summerized_ticket_content
 
 
 def build_playground(
@@ -35,15 +40,16 @@ def build_playground(
                     show_label=True,
                 )
             with gr.Column(scale=2):
-                with gr.Row():
-                    summerized_Subject = gr.Markdown(
-                        value="# Summerized Subject",
-                        line_breaks=True,
-                    )
-                    date = gr.Markdown(
-                        value="📅 Date",
-                        line_breaks=True,
-                    )
+                # TODO: sync with the chat history
+                # with gr.Row():
+                #     summerized_Subject = gr.Markdown(
+                #         value="# Summerized Subject",
+                #         line_breaks=True,
+                #     )
+                #     date = gr.Markdown(
+                #         value="📅 Date",
+                #         line_breaks=True,
+                #     )
                 with gr.Row():
                     summerized_ticket_conent = gr.Textbox(
                         interactive=True,
@@ -58,14 +64,15 @@ def build_playground(
                         line_breaks=True,
                     )
 
-                regenerate_summerized_ticket_content_btn = gr.Button(
-                    variant="secondary",
-                    value="🔄 re-generate",
-                )
-                submit_summerized_btn = gr.Button(
-                    variant="primary",
-                    value="🕹️ Submit to Ticket System",
-                )
+                with gr.Row():
+                    regenerate_summerized_ticket_content_btn = gr.Button(
+                        variant="secondary",
+                        value="🔄 re-generate",
+                    )
+                    submit_summerized_btn = gr.Button(
+                        variant="primary",
+                        value="🕹️ Submit to Ticket System",
+                    )
 
         submit_status = gr.Markdown(
             value="🚦 Submit Status: Pending",
@@ -130,10 +137,60 @@ def render_preview(summerized_ticket_conent: str) -> str:
     return prev_summerized_ticket_content
 
 def regenerate_summerized_ticket_content(
-    row_chat_history: str) -> str:
+    row_chat_history: gr.Chatbot) -> str:
 
-    summerized_ticket_conent = row_chat_history
-    return summerized_ticket_conent
+    _ = load_dotenv(find_dotenv())
+    azure_ml_deployed_url = os.environ['AZURE_ML_DEPLOYED_URL']
+    azure_ml_token = os.environ['AZURE_ML_TOKEN']
+    azure_model_deployment = os.environ['AZURE_MODEL_DEPLOYMENT']
+
+    result = []
+    current_user_type = None
+
+    for item in row_chat_history:
+        tam_message, client_message = item
+        if tam_message:
+            current_user_type = "TAM"
+            content = tam_message
+        elif client_message:
+            current_user_type = "Client"
+            content = client_message
+        else:
+            # Skip recording messages
+            continue
+        
+        result.append({
+            "user_type": current_user_type,
+            "content": content
+        })
+    
+    payload = str(result)
+
+    headers = {
+        'azureml-model-deployment': azure_model_deployment,
+        'authorization': f"Bearer {azure_ml_token}"
+    }
+
+    response: Response = requests.request("POST", azure_ml_deployed_url, headers=headers, data=payload)
+
+    if response.status_code == 200:
+
+        data: dict = json.loads(response.text)
+
+        result: str = json.loads(data["result"])    # result 是一個字串，裡面是一個 JSON 格式的字串
+        transcript = result["transcript"]
+        case_id = result["caseId"]
+        subject = result["subject"]
+
+        transcript_output = ""
+
+        # TODO: Change to HTML
+        for item in result['transcript']:
+            transcript_output += f"```\nSubmitted by {item['Submitted by']}\nContent: {item['content']}\n```\n\n"
+
+        summerized_ticket_content = f"""\n# Subject: {subject}\n> Case ID: {case_id}\n{transcript_output}"""
+        
+        return summerized_ticket_content
 
 def submit_summerized_ticket_content(
     summerized_ticket_conent: str) -> str:

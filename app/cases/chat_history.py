@@ -27,7 +27,7 @@ def render_row_chat_history(
             row_chat_history.append((message["content"], None))
 
     print(row_chat_history)
-    prev_summerized_ticket_content = "generating preview..."
+    prev_summerized_ticket_content = "![](https://img.pikbest.com/png-images/20190918/cartoon-snail-loading-loading-gif-animation_2734139.png!f305cw)"
 
     return row_chat_history, prev_summerized_ticket_content
 
