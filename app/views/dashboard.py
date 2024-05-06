@@ -3,8 +3,8 @@ from typing import Any
 import gradio as gr
 
 from app.api.mock import render_logs_summerized_tickets
-from app.cases.segment import get_segments
-from app.cases.segment import get_summerized_ticket_content
+from app.cases.segment import get_segments, get_summerized_ticket_content
+
 
 def build_playground(
     *args: Any, **kwargs: Any,) -> gr.Blocks:
@@ -36,6 +36,15 @@ def build_playground(
                 )
             with gr.Column(scale=2):
                 with gr.Row():
+                    summerized_Subject = gr.Markdown(
+                        value="# Summerized Subject",
+                        line_breaks=True,
+                    )
+                    Date = gr.Markdown(
+                        value="📅 Date",
+                        line_breaks=True,
+                    )
+                with gr.Row():
                     summerized_ticket_conent = gr.Textbox(
                         interactive=True,
                         label="📝 Summerized Ticket Content (shift + enter)",
@@ -44,6 +53,7 @@ def build_playground(
                     )
                     prev_summerized_ticket_content = gr.Markdown(
                         value=get_text(),
+                        line_breaks=True,
                     )
 
                 regen_summerized_btn = gr.Button(
@@ -91,20 +101,16 @@ def build_playground(
         log_segment.change(
             fn=render_logs_summerized_tickets,
             inputs=log_segment,
-            outputs=[row_chat_history, summerized_ticket_conent],
+            outputs=row_chat_history,
         )
 
     return demo
 
-
-
-
-    
 def render_preview(summerized_ticket_conent: str) -> str:
     prev_summerized_ticket_content = summerized_ticket_conent
     return prev_summerized_ticket_content
 
 def get_text():
     return """\
-# Please click on the "🔄 Refresh Log Segments Records" button to get the latest log segment records.
+# ⚠️ Please click on the "🔄 Refresh Log Segments Records" button to get the latest log segment records.
 """

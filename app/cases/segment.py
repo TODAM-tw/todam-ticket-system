@@ -9,17 +9,25 @@ GROUP_IDS = None
 
 def get_segments(
         log_segment: gr.Dropdown) -> gr.Dropdown:
+    """
+    Get segments from the API
 
-    url = "https://9w7elxl4e9.execute-api.us-east-1.amazonaws.com/Stage/segments?group_id=Gafe53a1eda42b981ac511d3a5ee765ac"
+    Args:
+        log_segment (gr.Dropdown): Dropdown object
+
+    Returns:
+        gr.Dropdown: Dropdown object
+    """
+    url: str = "https://9w7elxl4e9.execute-api.us-east-1.amazonaws.com/Stage/segments"
 
     payload = {}
     headers = {}
 
     response = requests.request(
-        "GET", url, headers=headers, data=payload)
+        method="GET", url=url, headers=headers, data=payload
+    )
 
     data = json.loads(response.text)
-
 
     segment_ids = [segment["segment_id"] for segment in data["segments"]]
     segment_names = [segment["segment_name"] for segment in data["segments"]]
@@ -39,6 +47,7 @@ def get_segments(
 
 def get_segment_row_chat_history(
         log_segment: gr.Dropdown) -> gr.Chatbot:
+    """"""
     url = f"https://wgt7ke1555.execute-api.us-east-1.amazonaws.com/dev/messages?segment_id={log_segment}"
 
     headers = {}
@@ -56,12 +65,14 @@ def get_segment_row_chat_history(
         elif message["user_type"] == "TAM":
             chat_history.append((message["content"], None))
 
-    print(chat_history)
     return chat_history
 
 def get_summerized_ticket_content(
         row_chat_history: gr.Chatbot) -> str:
-    ...
+    _ = load_dotenv(find_dotenv())
+    azure_ml_deployed_url = os.environ['AZURE_ML_DEPLOYED_URL']
+    azure_ml_token = os.environ['AZURE_ML_TOKEN']
+
     result = []
     current_user_type = None
 
@@ -81,18 +92,15 @@ def get_summerized_ticket_content(
             "user_type": current_user_type,
             "content": content
         })
-
-
-    url = "https://todam-aml-workspace-dev.eastus2.inference.ml.azure.com/score"
-
-    _ = load_dotenv(find_dotenv())
+    
     payload = str(result)
+
     headers = {
         'azureml-model-deployment': 'todam-aml-workspace-dev-0503-v1',
-        'authorization': f"Bearer {os.environ['AZURE_ML_TOKEN']}"
-        }
+        'authorization': f"Bearer {azure_ml_token}"
+    }
 
-    response = requests.request("POST", url, headers=headers, data=payload)
+    response = requests.request("POST", azure_ml_deployed_url, headers=headers, data=payload)
 
 
     data: dict = json.loads(response.text)
@@ -106,6 +114,8 @@ def get_summerized_ticket_content(
     markdown_output = ""
 
     for item in result['transcript']:
-        markdown_output += "```\nSubmitted by {}\nContent: {}\n```\n\n".format(item['Submitted by'], item['content'])
+        markdown_output += f"```\nSubmitted by {item['Submitted by']}\nContent: {item['content']}\n```\n\n"
 
-    return markdown_output
+    summerized_ticket_content = f"""\n# Subject: {subject}\n> Case ID: {case_id}\n{markdown_output}"""
+
+    return summerized_ticket_content
