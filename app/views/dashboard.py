@@ -2,8 +2,8 @@ from typing import Any
 
 import gradio as gr
 
-from app.api.mock import render_logs_summerized_tickets
 from app.cases.segment import get_segments, get_summerized_ticket_content
+from app.cases.chat_history import render_row_chat_history
 
 
 def build_playground(
@@ -40,7 +40,7 @@ def build_playground(
                         value="# Summerized Subject",
                         line_breaks=True,
                     )
-                    Date = gr.Markdown(
+                    date = gr.Markdown(
                         value="📅 Date",
                         line_breaks=True,
                     )
@@ -49,14 +49,16 @@ def build_playground(
                         interactive=True,
                         label="📝 Summerized Ticket Content (shift + enter)",
                         render=True,
-                        value=get_text(),
+                        value="""# ⚠️ Please click on the "🔄 Refresh Log Segments Records" button to get the latest log segment records.""",
                     )
+
+                    # TODO: Change to HTML
                     prev_summerized_ticket_content = gr.Markdown(
-                        value=get_text(),
+                        value="""# ⚠️ Please click on the "🔄 Refresh Log Segments Records" button to get the latest log segment records.""",
                         line_breaks=True,
                     )
 
-                regen_summerized_btn = gr.Button(
+                regenerate_summerized_ticket_content_btn = gr.Button(
                     variant="secondary",
                     value="🔄 re-generate",
                 )
@@ -64,6 +66,11 @@ def build_playground(
                     variant="primary",
                     value="🕹️ Submit to Ticket System",
                 )
+
+        submit_status = gr.Markdown(
+            value="🚦 Submit Status: Pending",
+            line_breaks=True,
+        )
 
             
 
@@ -99,9 +106,21 @@ def build_playground(
 
 
         log_segment.change(
-            fn=render_logs_summerized_tickets,
+            fn=render_row_chat_history,
             inputs=log_segment,
-            outputs=row_chat_history,
+            outputs=[row_chat_history, prev_summerized_ticket_content],
+        )
+
+        regenerate_summerized_ticket_content_btn.click(
+            fn=regenerate_summerized_ticket_content,
+            inputs=row_chat_history,
+            outputs=summerized_ticket_conent,
+        )
+
+        submit_summerized_btn.click(
+            fn=submit_summerized_ticket_content,
+            inputs=summerized_ticket_conent,
+            outputs=submit_status,
         )
 
     return demo
@@ -110,7 +129,15 @@ def render_preview(summerized_ticket_conent: str) -> str:
     prev_summerized_ticket_content = summerized_ticket_conent
     return prev_summerized_ticket_content
 
-def get_text():
-    return """\
-# ⚠️ Please click on the "🔄 Refresh Log Segments Records" button to get the latest log segment records.
-"""
+def regenerate_summerized_ticket_content(
+    row_chat_history: str) -> str:
+
+    summerized_ticket_conent = row_chat_history
+    return summerized_ticket_conent
+
+def submit_summerized_ticket_content(
+    summerized_ticket_conent: str) -> str:
+
+    submit_status = "🚦 Submit Status: Success"
+    return submit_status
+

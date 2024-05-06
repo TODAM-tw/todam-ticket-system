@@ -72,6 +72,7 @@ def get_summerized_ticket_content(
     _ = load_dotenv(find_dotenv())
     azure_ml_deployed_url = os.environ['AZURE_ML_DEPLOYED_URL']
     azure_ml_token = os.environ['AZURE_ML_TOKEN']
+    azure_model_deployment = os.environ['AZURE_MODEL_DEPLOYMENT']
 
     result = []
     current_user_type = None
@@ -96,7 +97,7 @@ def get_summerized_ticket_content(
     payload = str(result)
 
     headers = {
-        'azureml-model-deployment': 'todam-aml-workspace-dev-0503-v1',
+        'azureml-model-deployment': azure_model_deployment,
         'authorization': f"Bearer {azure_ml_token}"
     }
 
@@ -113,6 +114,7 @@ def get_summerized_ticket_content(
 
     markdown_output = ""
 
+    # TODO: Change to HTML
     for item in result['transcript']:
         markdown_output += f"```\nSubmitted by {item['Submitted by']}\nContent: {item['content']}\n```\n\n"
 

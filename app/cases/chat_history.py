@@ -7,7 +7,7 @@ import json
 # 1. 需要有能力去 Handle Dropdown 是空的情況 -> 具體要回傳什麼給 gradio
 
 
-def render_logs_summerized_tickets(
+def render_row_chat_history(
         log_segment_subject: str) -> tuple[tuple[str, str], str]:
     url = f"https://wgt7ke1555.execute-api.us-east-1.amazonaws.com/dev/messages?segment_id={log_segment_subject}"
 
@@ -27,8 +27,9 @@ def render_logs_summerized_tickets(
             row_chat_history.append((message["content"], None))
 
     print(row_chat_history)
+    prev_summerized_ticket_content = "generating preview..."
 
-    return row_chat_history
+    return row_chat_history, prev_summerized_ticket_content
 
 def summerized_by_model(row_chat_history_segment):
     return f"""\
