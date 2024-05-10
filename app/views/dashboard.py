@@ -1,14 +1,11 @@
-import json
-import os
 from typing import Any
 
 import gradio as gr
-import requests
-from dotenv import find_dotenv, load_dotenv
-from requests.models import Response
 
-from app.cases.chat_history import render_row_chat_history
-from app.cases.segment import get_segments, get_summerized_ticket_content
+from app.cases.chat_history import get_row_chat_history
+from app.cases.segment import get_segments
+from app.cases.submit import submit_summerized_ticket_content
+from app.cases.summerized_content import get_summerized_ticket_content
 
 
 def build_playground(
@@ -113,13 +110,13 @@ def build_playground(
 
 
         log_segment.change(
-            fn=render_row_chat_history,
+            fn=get_row_chat_history,
             inputs=log_segment,
             outputs=[row_chat_history, prev_summerized_ticket_content],
         )
 
         regenerate_summerized_ticket_content_btn.click(
-            fn=regenerate_summerized_ticket_content,
+            fn=get_summerized_ticket_content,
             inputs=row_chat_history,
             outputs=summerized_ticket_conent,
         )
@@ -135,66 +132,4 @@ def build_playground(
 def render_preview(summerized_ticket_conent: str) -> str:
     prev_summerized_ticket_content = summerized_ticket_conent
     return prev_summerized_ticket_content
-
-def regenerate_summerized_ticket_content(
-    row_chat_history: gr.Chatbot) -> str:
-
-    _ = load_dotenv(find_dotenv())
-    azure_ml_deployed_url = os.environ['AZURE_ML_DEPLOYED_URL']
-    azure_ml_token = os.environ['AZURE_ML_TOKEN']
-    azure_model_deployment = os.environ['AZURE_MODEL_DEPLOYMENT']
-
-    result = []
-    current_user_type = None
-
-    for item in row_chat_history:
-        tam_message, client_message = item
-        if tam_message:
-            current_user_type = "TAM"
-            content = tam_message
-        elif client_message:
-            current_user_type = "Client"
-            content = client_message
-        else:
-            # Skip recording messages
-            continue
-        
-        result.append({
-            "user_type": current_user_type,
-            "content": content
-        })
-    
-    payload = str(result)
-
-    headers = {
-        'azureml-model-deployment': azure_model_deployment,
-        'authorization': f"Bearer {azure_ml_token}"
-    }
-
-    response: Response = requests.request("POST", azure_ml_deployed_url, headers=headers, data=payload)
-
-    if response.status_code == 200:
-
-        data: dict = json.loads(response.text)
-
-        result: str = json.loads(data["result"])    # result 是一個字串，裡面是一個 JSON 格式的字串
-        transcript = result["transcript"]
-        case_id = result["caseId"]
-        subject = result["subject"]
-
-        transcript_output = ""
-
-        # TODO: Change to HTML
-        for item in result['transcript']:
-            transcript_output += f"```\nSubmitted by {item['Submitted by']}\nContent: {item['content']}\n```\n\n"
-
-        summerized_ticket_content = f"""\n# Subject: {subject}\n> Case ID: {case_id}\n{transcript_output}"""
-        
-        return summerized_ticket_content
-
-def submit_summerized_ticket_content(
-    summerized_ticket_conent: str) -> str:
-
-    submit_status = "🚦 Submit Status: Success"
-    return submit_status
 
