@@ -40,5 +40,3 @@ def get_segments(
     )
 
     return log_segment
-
-

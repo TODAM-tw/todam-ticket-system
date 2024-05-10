@@ -4,7 +4,7 @@ import gradio as gr
 
 from app.cases.chat_history import get_row_chat_history
 from app.cases.segment import get_segments
-from app.cases.submit import submit_summerized_ticket_content
+from app.cases.submit import send_summerized_ticket_content
 from app.cases.summerized_content import get_summerized_ticket_content
 
 
@@ -96,10 +96,10 @@ def build_playground(
             outputs=[log_segment],
         )
 
-        summerized_ticket_conent.change(
-            fn=render_preview,
-            inputs=summerized_ticket_conent,
-            outputs=prev_summerized_ticket_content,
+        log_segment.change(
+            fn=get_row_chat_history,
+            inputs=log_segment,
+            outputs=[row_chat_history, prev_summerized_ticket_content],
         )
 
         row_chat_history.change(
@@ -108,11 +108,10 @@ def build_playground(
             outputs=summerized_ticket_conent,
         )
 
-
-        log_segment.change(
-            fn=get_row_chat_history,
-            inputs=log_segment,
-            outputs=[row_chat_history, prev_summerized_ticket_content],
+        summerized_ticket_conent.change(
+            fn=render_preview,
+            inputs=summerized_ticket_conent,
+            outputs=prev_summerized_ticket_content,
         )
 
         regenerate_summerized_ticket_content_btn.click(
@@ -122,7 +121,7 @@ def build_playground(
         )
 
         submit_summerized_btn.click(
-            fn=submit_summerized_ticket_content,
+            fn=send_summerized_ticket_content,
             inputs=summerized_ticket_conent,
             outputs=submit_status,
         )
@@ -132,4 +131,3 @@ def build_playground(
 def render_preview(summerized_ticket_conent: str) -> str:
     prev_summerized_ticket_content = summerized_ticket_conent
     return prev_summerized_ticket_content
-
