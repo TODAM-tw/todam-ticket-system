@@ -1,7 +1,9 @@
 import json
+import os
 
 import gradio as gr
 import requests
+from dotenv import find_dotenv, load_dotenv
 
 
 def get_segments(
@@ -15,14 +17,14 @@ def get_segments(
     Returns:
         gr.Dropdown: Dropdown object
     """
-    #TODO: Add error handling and Add to env
-    url: str = "https://9w7elxl4e9.execute-api.us-east-1.amazonaws.com/Stage/segments"
+    _ = load_dotenv(find_dotenv())
+    list_log_segment_api_url: str = os.environ['LIST_LOG_SEGMENT_API_URL']
 
     payload = {}
     headers = {}
 
     response = requests.request(
-        method="GET", url=url, headers=headers, data=payload
+        method="GET", url=list_log_segment_api_url, headers=headers, data=payload
     )
     if response.status_code == 200:
         data = json.loads(response.text)

@@ -1,6 +1,8 @@
 import json
+import os
 
 import requests
+from dotenv import find_dotenv, load_dotenv
 
 # TODO:
 # 1. 需要有能力去 Handle Dropdown 是空的情況 -> 具體要回傳什麼給 gradio
@@ -8,8 +10,9 @@ import requests
 
 def get_row_chat_history(
         log_segment_subject: str) -> tuple[tuple[str, str], str]:
-    #TODO: Add error handling and Add to env
-    url = f"https://wgt7ke1555.execute-api.us-east-1.amazonaws.com/dev/messages?segment_id={log_segment_subject}"
+    _ = load_dotenv(find_dotenv())
+    list_chat_history_api_url: str = os.environ['LIST_CHAT_HISTORY_API_URL']
+    url = f"{list_chat_history_api_url}/messages?segment_id={log_segment_subject}"
 
     headers = {}
     payload = {}
@@ -28,7 +31,6 @@ def get_row_chat_history(
         elif message["user_type"] == "TAM":
             row_chat_history.append((message["content"], None))
 
-    print(row_chat_history)
     prev_summerized_ticket_content = "![](https://img.pikbest.com/png-images/20190918/cartoon-snail-loading-loading-gif-animation_2734139.png!f305cw)"
 
     return row_chat_history, prev_summerized_ticket_content

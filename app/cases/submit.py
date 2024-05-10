@@ -9,10 +9,8 @@ def send_summerized_ticket_content(
     summerized_ticket_content: gr.Dropdown, log_segment_subject: gr.Markdown) -> str:
     _ = load_dotenv(find_dotenv())
     department_id: str = os.environ['DEPARTMENT_ID']
+    submit_ticket_api_url = os.environ['SUBMIT_TICKET_API_URL']
 
-    url = "https://q9q62or5n2.execute-api.us-east-1.amazonaws.com/dev/tickets"
-
-    # Failed
     payload = {
         "ticket_subject"    : "test by Hugo",   # TODO: subject 之後要獨立出 get_summerized_ticket_content()
         "ticket_description": summerized_ticket_content,
@@ -25,7 +23,7 @@ def send_summerized_ticket_content(
 
     try:
         response = requests.request(
-            "POST", url, headers=headers, json=payload  # change data to json
+            "POST", submit_ticket_api_url, headers=headers, json=payload  # change data to json
         )
 
         if response.status_code == 200: 
