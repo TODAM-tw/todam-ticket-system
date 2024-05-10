@@ -8,6 +8,7 @@ import requests
 
 def get_row_chat_history(
         log_segment_subject: str) -> tuple[tuple[str, str], str]:
+    #TODO: Add error handling and Add to env
     url = f"https://wgt7ke1555.execute-api.us-east-1.amazonaws.com/dev/messages?segment_id={log_segment_subject}"
 
     headers = {}
@@ -42,4 +43,3 @@ def process_tickets(tickets):
         elif role == "TAM":
             processed_tickets.append((description, None))
     return processed_tickets
-

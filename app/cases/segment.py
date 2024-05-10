@@ -15,6 +15,7 @@ def get_segments(
     Returns:
         gr.Dropdown: Dropdown object
     """
+    #TODO: Add error handling and Add to env
     url: str = "https://9w7elxl4e9.execute-api.us-east-1.amazonaws.com/Stage/segments"
 
     payload = {}

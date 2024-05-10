@@ -122,7 +122,7 @@ def build_playground(
 
         submit_summerized_btn.click(
             fn=send_summerized_ticket_content,
-            inputs=summerized_ticket_conent,
+            inputs=[summerized_ticket_conent, log_segment],
             outputs=submit_status,
         )
 

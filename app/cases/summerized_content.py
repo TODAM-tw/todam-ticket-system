@@ -37,6 +37,7 @@ def get_summerized_ticket_content(
     
     # TODO: Add Message Type
     payload = str(result)
+    # print(payload)
 
     headers = {
         'azureml-model-deployment': azure_model_deployment,
@@ -45,7 +46,7 @@ def get_summerized_ticket_content(
 
     response: Response = requests.request(
         "POST", azure_ml_deployed_url, 
-        headers=headers, data=payload
+        headers=headers, json=result
     )
 
     if response.status_code == 200:
@@ -62,7 +63,7 @@ def get_summerized_ticket_content(
 
     # TODO: Change to HTML
     for item in result['transcript']:
-        transcript_output += f"> Submitted by {item['Submitted by']}\n> Content: {item['content']}\n\n\n"
+        transcript_output += f"### Submitted by {item['Submitted by']}\nContent: {item['content']}\n\n\n"
 
     summerized_ticket_content = f"""\n# Subject: {subject}\n- Case ID: {case_id}\n{transcript_output}\n\n\n"""
     
