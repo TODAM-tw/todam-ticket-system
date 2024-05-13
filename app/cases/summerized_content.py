@@ -37,6 +37,7 @@ def get_summerized_ticket_content(
     
     # TODO: Add Message Type
     payload = str(result)
+    # print(payload)
 
     headers = {
         'azureml-model-deployment': azure_model_deployment,
@@ -54,7 +55,7 @@ def get_summerized_ticket_content(
         return "Error: Something went wrong with the API"
 
     result: dict = json.loads(data["result"])    # data["result"] 裡面是一個 JSON 格式的字串
-    transcript = result["transcript"]
+    # transcript = result["transcript"]
     case_id = result["caseId"]
     subject = result["subject"]
 
