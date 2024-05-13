@@ -46,7 +46,7 @@ def get_summerized_ticket_content(
 
     response: Response = requests.request(
         "POST", azure_ml_deployed_url, 
-        headers=headers, json=result
+        headers=headers, data=payload
     )
 
     if response.status_code == 200:
@@ -55,7 +55,7 @@ def get_summerized_ticket_content(
         return "Error: Something went wrong with the API"
 
     result: dict = json.loads(data["result"])    # data["result"] 裡面是一個 JSON 格式的字串
-    transcript = result["transcript"]
+    # transcript = result["transcript"]
     case_id = result["caseId"]
     subject = result["subject"]
 
@@ -63,7 +63,7 @@ def get_summerized_ticket_content(
 
     # TODO: Change to HTML
     for item in result['transcript']:
-        transcript_output += f"### Submitted by {item['Submitted by']}\nContent: {item['content']}\n\n\n"
+        transcript_output += f"> Submitted by {item['Submitted by']}\n> Content: {item['content']}\n\n\n"
 
     summerized_ticket_content = f"""\n# Subject: {subject}\n- Case ID: {case_id}\n{transcript_output}\n\n\n"""
     

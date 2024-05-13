@@ -34,12 +34,58 @@ def get_segments(
     group_ids = [segment["group_id"] for segment in data["segments"]]
 
     log_segment = gr.Dropdown(
-        label="🚘 Log Segment Records",
+        label="🚘 Log Segment Records (ID)",
         info="Select a Record Segment to summerize with 👇🏻",
         value=segment_ids[0],
         choices=segment_ids,
         interactive=True,
         multiselect=None,
+        # visible=False,
+    )
+
+    log_segment_name = gr.Dropdown(
+        label="🚘 Log Segment Records (Name)",
+        info="Select a Record Segment to summerize with 👇🏻",
+        value=segment_names[0],
+        choices=segment_names,
+        interactive=True,
+        multiselect=None,
     )
 
     return log_segment
+
+
+
+class LogSegment:
+    """
+    LogSegment class
+    """
+    def __init__(self,):
+        pass
+
+    def update_segment_id(self, segment_id: str) -> str:
+        """
+        Update segment id
+
+        Args:
+            segment_id (str): segment id
+
+        Returns:
+            str: segment id
+        """
+        self.segment_id = segment_id
+        return self.segment_id
+    
+    
+    
+if __name__ == "__main__":
+    log_segment = gr.Dropdown(
+        label="🚘 Log Segment Records",
+        info="Select a Record Segment to summerize with 👇🏻",
+    )
+    log_segment, log_segment_name = get_segments(log_segment)
+    print(log_segment)
+    print(log_segment_name)
+
+    log_segment = LogSegment()
+    log_segment, log_segment_name = log_segment.get_segments(log_segment)

@@ -32,6 +32,5 @@ def send_summerized_ticket_content(
         submit_status = "🚦 Submit Status: Success"
         return submit_status
     except Exception as e:
-        print(e)
-        submit_status = "🚦 Submit Status: Failed"
+        submit_status = f"🚦 Submit Status: Failed, the error is {e}"
         return submit_status
