@@ -60,11 +60,9 @@ def get_summerized_ticket_content(
     subject = result["subject"]
 
     transcript_output = ""
-
-    # TODO: Change to HTML
     for item in result['transcript']:
-        transcript_output += f"> Submitted by {item['Submitted by']}\n> Content: {item['content']}\n\n\n"
+        transcript_output += f"<blockquote><h3>Submitted by {item['Submitted by']}</h3>Content: {item['content']}</blockquote>\n"
 
-    summerized_ticket_content = f"""\n# Subject: {subject}\n- Case ID: {case_id}\n{transcript_output}\n\n\n"""
+    summerized_ticket_content = f"<div>\n<h1>Subject: {subject}</h1>\n<h3>Case ID: {case_id}</h3>\n{transcript_output}\n</div>"
     
     return summerized_ticket_content

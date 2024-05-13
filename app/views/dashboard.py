@@ -64,9 +64,8 @@ def build_playground(
                     )
 
                     # TODO: Change to HTML
-                    prev_summerized_ticket_content = gr.Markdown(
+                    prev_summerized_ticket_content = gr.HTML(
                         value="""# ⚠️ Please click on the "🔄 Refresh Log Segments Records" button to get the latest log segment records.""",
-                        line_breaks=True,
                     )
 
                 with gr.Row():
