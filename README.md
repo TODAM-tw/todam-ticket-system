@@ -1,5 +1,6 @@
 # ToDAM Ticket System
 
+The frontend with gradio and combined with the API endpoints for the ticket system.
 
 ## Developing Requirements
 
