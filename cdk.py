@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 from aws_cdk import App, CfnOutput, Duration, Environment, Stack
@@ -14,11 +15,6 @@ class GradioLambda(Stack):
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
-        self.environment = Environment(
-            account=self.account,
-            region=self.region,
-        )
-
         # create function
         lambda_fn = DockerImageFunction(
             self,
@@ -34,6 +30,9 @@ class GradioLambda(Stack):
 
 
 app = App()
-rust_lambda = GradioLambda(app, "GradioLambda")
+environment = Environment(
+    account=os.environ["CDK_DEFAULT_ACCOUNT"], region=os.environ["CDK_DEFAULT_REGION"]
+)
+rust_lambda = GradioLambda(app, "GradioLambda", env=environment)
 
 app.synth()
