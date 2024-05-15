@@ -63,10 +63,15 @@ def build_playground(
                         value="""# ⚠️ Please click on the "🔄 Refresh Log Segments Records" button to get the latest log segment records.""",
                     )
 
-                    # TODO: Change to HTML
-                    prev_summerized_ticket_content = gr.HTML(
-                        value="""# ⚠️ Please click on the "🔄 Refresh Log Segments Records" button to get the latest log segment records.""",
-                    )
+                    with gr.Row():
+                        with gr.Column():
+                            prev_summerized_ticket_subject = gr.HTML(
+                                value="""Subject: """,
+                            )
+                        with gr.Column():
+                            prev_summerized_ticket_content = gr.HTML(
+                                value="""Content""",
+                            )
 
                 with gr.Row():
                     regenerate_summerized_ticket_content_btn = gr.Button(
@@ -118,8 +123,8 @@ def build_playground(
 
         row_chat_history.change(
             fn=get_summerized_ticket_content,
-            inputs=row_chat_history,
-            outputs=summerized_ticket_conent,
+            inputs=[log_segment_id, row_chat_history],
+            outputs=[prev_summerized_ticket_subject, summerized_ticket_conent],
         )
 
         summerized_ticket_conent.change(
@@ -130,8 +135,8 @@ def build_playground(
 
         regenerate_summerized_ticket_content_btn.click(
             fn=get_summerized_ticket_content,
-            inputs=row_chat_history,
-            outputs=summerized_ticket_conent,
+            inputs=[log_segment_id, row_chat_history],
+            outputs=[prev_summerized_ticket_subject, summerized_ticket_conent],
         )
 
         submit_summerized_btn.click(

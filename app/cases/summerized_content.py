@@ -8,7 +8,7 @@ from requests.models import Response
 
 
 def get_summerized_ticket_content(
-        row_chat_history: gr.Chatbot) -> str:
+        log_segment: gr.Dropdown, row_chat_history: gr.Chatbot) -> tuple[str, str]:
     _ = load_dotenv(find_dotenv())
     azure_ml_deployed_url : str = os.environ['AZURE_ML_DEPLOYED_URL']
     azure_ml_token        : str = os.environ['AZURE_ML_TOKEN']
@@ -56,13 +56,15 @@ def get_summerized_ticket_content(
 
     result: dict = json.loads(data["result"])    # data["result"] 裡面是一個 JSON 格式的字串
     # transcript = result["transcript"]
-    case_id = result["caseId"]
+    case_id = log_segment
+    # case_id = result["caseId"]
     subject = result["subject"]
 
     transcript_output = ""
     for item in result['transcript']:
         transcript_output += f"<blockquote><h3>Submitted by {item['Submitted by']}</h3>Content: {item['content']}</blockquote>\n"
 
-    summerized_ticket_content = f"<div>\n<h1>Subject: {subject}</h1>\n<h3>Case ID: {case_id}</h3>\n{transcript_output}\n</div>"
+    subject_output = f"<h1>Subject: {subject}</h1>"
+    summerized_ticket_content = f"<div>\n<h3>Case ID: {case_id}</h3>\n{transcript_output}\n</div>"
     
-    return summerized_ticket_content
+    return subject_output, summerized_ticket_content

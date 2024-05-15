@@ -8,8 +8,8 @@ from dotenv import find_dotenv, load_dotenv
 def send_summerized_ticket_content(
     summerized_ticket_content: gr.Dropdown, log_segment_subject: gr.Markdown) -> str:
     _ = load_dotenv(find_dotenv())
-    department_id: str = os.environ['DEPARTMENT_ID']
-    submit_ticket_api_url = os.environ['SUBMIT_TICKET_API_URL']
+    department_id        : str = os.environ['DEPARTMENT_ID']
+    submit_ticket_api_url: str = os.environ['SUBMIT_TICKET_API_URL']
 
     payload = {
         "ticket_subject"    : "test by Hugo",   # TODO: subject 之後要獨立出 get_summerized_ticket_content()

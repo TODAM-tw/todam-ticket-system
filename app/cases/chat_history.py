@@ -23,6 +23,8 @@ def get_row_chat_history(
 
     messages = data["messages"]
 
+    # print(data)
+
     row_chat_history = []
 
     for message in messages:
