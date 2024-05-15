@@ -7,7 +7,7 @@ from dotenv import find_dotenv, load_dotenv
 from requests.models import Response
 
 
-def get_summerized_ticket_content(
+def get_summarized_ticket_content(
         log_segment: gr.Dropdown, row_chat_history: gr.Chatbot) -> tuple[str, str]:
     _ = load_dotenv(find_dotenv())
     azure_ml_deployed_url : str = os.environ['AZURE_ML_DEPLOYED_URL']

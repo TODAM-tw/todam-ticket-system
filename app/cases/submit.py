@@ -5,7 +5,7 @@ import requests
 from dotenv import find_dotenv, load_dotenv
 
 
-def send_summerized_ticket_content(
+def send_summarized_ticket_content(
     ticket_subject: gr.HTML, summerized_ticket_content: gr.Dropdown, 
     log_segment_subject: gr.Markdown) -> str:
     _ = load_dotenv(find_dotenv())

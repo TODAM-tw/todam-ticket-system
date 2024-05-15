@@ -4,8 +4,8 @@ import gradio as gr
 
 from app.cases.chat_history import get_row_chat_history
 from app.cases.segment import get_segments
-from app.cases.submit import send_summerized_ticket_content
-from app.cases.summerized_content import get_summerized_ticket_content
+from app.cases.submit import send_summarized_ticket_content
+from app.cases.summarized_content import get_summarized_ticket_content
 
 
 def build_playground(
@@ -47,8 +47,8 @@ def build_playground(
             with gr.Column(scale=2):
                 # TODO: sync with the chat history
                 # with gr.Row():
-                #     summerized_Subject = gr.Markdown(
-                #         value="# Summerized Subject",
+                #     summarized_Subject = gr.Markdown(
+                #         value="# Summarized Subject",
                 #         line_breaks=True,
                 #     )
                 #     date = gr.Markdown(
@@ -56,29 +56,29 @@ def build_playground(
                 #         line_breaks=True,
                 #     )
                 with gr.Row():
-                    summerized_ticket_conent = gr.Textbox(
+                    summarized_ticket_conent = gr.Textbox(
                         interactive=True,
-                        label="📝 Summerized Ticket Content (shift + enter)",
+                        label="📝 Summarized Ticket Content (shift + enter)",
                         render=True,
                         value="""# ⚠️ Please click on the "🔄 Refresh Log Segments Records" button to get the latest log segment records.""",
                     )
 
                     with gr.Row():
                         with gr.Column():
-                            prev_summerized_ticket_subject = gr.HTML(
+                            prev_summarized_ticket_subject = gr.HTML(
                                 value="""Subject: """,
                             )
                         with gr.Column():
-                            prev_summerized_ticket_content = gr.HTML(
+                            prev_summarized_ticket_content = gr.HTML(
                                 value="""Content""",
                             )
 
                 with gr.Row():
-                    regenerate_summerized_ticket_content_btn = gr.Button(
+                    regenerate_summarized_ticket_content_btn = gr.Button(
                         variant="secondary",
                         value="🔄 re-generate",
                     )
-                    submit_summerized_btn = gr.Button(
+                    submit_summarized_btn = gr.Button(
                         variant="primary",
                         value="🕹️ Submit to Ticket System",
                     )
@@ -112,41 +112,41 @@ def build_playground(
         # log_segment_name.change(
         #     fn=get_row_chat_history,
         #     inputs=log_segment_id,
-        #     outputs=[log_segment_id, row_chat_history, prev_summerized_ticket_content],
+        #     outputs=[log_segment_id, row_chat_history, prev_summarized_ticket_content],
         # )
 
         log_segment_id.change(
             fn=get_row_chat_history,
             inputs=log_segment_id,
-            outputs=[row_chat_history, prev_summerized_ticket_content],
+            outputs=[row_chat_history, prev_summarized_ticket_content],
         )
 
         row_chat_history.change(
-            fn=get_summerized_ticket_content,
+            fn=get_summarized_ticket_content,
             inputs=[log_segment_id, row_chat_history],
-            outputs=[prev_summerized_ticket_subject, summerized_ticket_conent],
+            outputs=[prev_summarized_ticket_subject, summarized_ticket_conent],
         )
 
-        summerized_ticket_conent.change(
+        summarized_ticket_conent.change(
             fn=render_preview,
-            inputs=summerized_ticket_conent,
-            outputs=prev_summerized_ticket_content,
+            inputs=summarized_ticket_conent,
+            outputs=prev_summarized_ticket_content,
         )
 
-        regenerate_summerized_ticket_content_btn.click(
-            fn=get_summerized_ticket_content,
+        regenerate_summarized_ticket_content_btn.click(
+            fn=get_summarized_ticket_content,
             inputs=[log_segment_id, row_chat_history],
-            outputs=[prev_summerized_ticket_subject, summerized_ticket_conent],
+            outputs=[prev_summarized_ticket_subject, summarized_ticket_conent],
         )
 
-        submit_summerized_btn.click(
-            fn=send_summerized_ticket_content,
-            inputs=[prev_summerized_ticket_subject, summerized_ticket_conent, log_segment_id],
+        submit_summarized_btn.click(
+            fn=send_summarized_ticket_content,
+            inputs=[prev_summarized_ticket_subject, summarized_ticket_conent, log_segment_id],
             outputs=submit_status,
         )
 
     return demo
 
-def render_preview(summerized_ticket_conent: str) -> str:
-    prev_summerized_ticket_content = summerized_ticket_conent
-    return prev_summerized_ticket_content
+def render_preview(summarized_ticket_conent: str) -> str:
+    prev_summarized_ticket_content = summarized_ticket_conent
+    return prev_summarized_ticket_content
