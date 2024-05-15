@@ -23,6 +23,8 @@ def get_row_chat_history(
 
     messages = data["messages"]
 
+    # print(data)
+
     row_chat_history = []
 
     for message in messages:
@@ -31,7 +33,7 @@ def get_row_chat_history(
         elif message["user_type"] == "TAM":
             row_chat_history.append((message["content"], None))
 
-    prev_summerized_ticket_content = "![](https://img.pikbest.com/png-images/20190918/cartoon-snail-loading-loading-gif-animation_2734139.png!f305cw)"
+    prev_summerized_ticket_content = """<img src="https://img.pikbest.com/png-images/20190918/cartoon-snail-loading-loading-gif-animation_2734139.png!f305cw" alt="cartoon snail loading" />"""
 
     return row_chat_history, prev_summerized_ticket_content
 
