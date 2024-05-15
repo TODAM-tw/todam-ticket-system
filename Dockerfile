@@ -1,17 +1,12 @@
-# Use the official AWS Lambda Python base image
-FROM public.ecr.aws/lambda/python:3.11
+FROM public.ecr.aws/docker/library/python:3.11-slim-buster
 
-# Set the working directory to /app
-WORKDIR /app
+COPY --from=public.ecr.aws/awsguru/aws-lambda-adapter:0.8.3 /lambda-adapter /opt/extensions/lambda-adapter
+ENV PORT=8080
+WORKDIR /var/task
 
-# Copy the requirements file
 COPY requirements.txt .
+RUN python -m pip install -r requirements.txt
 
-# Install the dependencies
-RUN pip install -r requirements.txt
-
-# Copy the rest of the application code
 COPY . .
 
-# Set the CMD to run your application using the Lambda entry point
-CMD ["python3", "app.py"]
+CMD exec uvicorn app.main:app --host 0.0.0.0 --port 8080 --reload
