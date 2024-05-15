@@ -6,13 +6,16 @@ from dotenv import find_dotenv, load_dotenv
 
 
 def send_summerized_ticket_content(
-    summerized_ticket_content: gr.Dropdown, log_segment_subject: gr.Markdown) -> str:
+    ticket_subject: gr.HTML, summerized_ticket_content: gr.Dropdown, 
+    log_segment_subject: gr.Markdown) -> str:
     _ = load_dotenv(find_dotenv())
     department_id        : str = os.environ['DEPARTMENT_ID']
     submit_ticket_api_url: str = os.environ['SUBMIT_TICKET_API_URL']
 
+    ticket_subject = remove_subject_tag(ticket_subject)
+
     payload = {
-        "ticket_subject"    : "test by Hugo",   # TODO: subject 之後要獨立出 get_summerized_ticket_content()
+        "ticket_subject"    : ticket_subject,
         "ticket_description": summerized_ticket_content,
         "department_id"     : department_id,
         "segment_id"        : log_segment_subject
@@ -34,3 +37,7 @@ def send_summerized_ticket_content(
     except Exception as e:
         submit_status = f"🚦 Submit Status: Failed, the error is {e}"
         return submit_status
+
+
+def remove_subject_tag(subject):
+    return subject.replace("<h1>Subject: ", "").replace("</h1>", "")

@@ -62,6 +62,7 @@ def get_summerized_ticket_content(
 
     transcript_output = ""
     for item in result['transcript']:
+        print(item)
         transcript_output += f"<blockquote><h3>Submitted by {item['Submitted by']}</h3>Content: {item['content']}</blockquote>\n"
 
     subject_output = f"<h1>Subject: {subject}</h1>"
