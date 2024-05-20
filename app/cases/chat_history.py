@@ -17,25 +17,31 @@ def get_row_chat_history(
     headers = {}
     payload = {}
 
-    response = requests.request("GET", url, headers=headers, data=payload)
+    response = requests.request(
+        "GET", url, headers=headers, data=payload)
     if response.status_code == 200:
         data = json.loads(response.text)
 
     messages = data["messages"]
 
-    # print(data)
-
     row_chat_history = []
+    types = []
 
     for message in messages:
+        types.append(message["message_type"])
         if message["user_type"] == "Client":
             row_chat_history.append((None, message["content"]))
         elif message["user_type"] == "TAM":
             row_chat_history.append((message["content"], None))
 
-    prev_summerized_ticket_content = """<img src="https://img.pikbest.com/png-images/20190918/cartoon-snail-loading-loading-gif-animation_2734139.png!f305cw" alt="cartoon snail loading" />"""
+    # TODO
+    # Add Loading Animation
+    # prev_summerized_ticket_content = """<img src="https://img.pikbest.com/png-images/20190918/cartoon-snail-loading-loading-gif-animation_2734139.png!f305cw" alt="cartoon snail loading" />"""
 
-    return row_chat_history, prev_summerized_ticket_content
+    return row_chat_history, str(types)
+    # TODO
+    # Add Loading Animation
+    # return row_chat_history, prev_summerized_ticket_content
 
 def process_tickets(tickets):
     processed_tickets = []

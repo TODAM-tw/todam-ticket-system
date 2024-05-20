@@ -60,7 +60,7 @@ def build_playground(
                         interactive=True,
                         label="📝 Summarized Ticket Content (shift + enter)",
                         render=True,
-                        value="""# ⚠️ Please click on the "🔄 Refresh Log Segments Records" button to get the latest log segment records.""",
+                        value="""<h1> ⚠️ Please click on the "🔄 Refresh Log Segments Records" button to get the latest log segment records. </h1>""",
                     )
 
                     with gr.Row():
@@ -70,7 +70,7 @@ def build_playground(
                             )
                         with gr.Column():
                             prev_summarized_ticket_content = gr.HTML(
-                                value="""Content""",
+                                # value="""Content""",
                             )
 
                 with gr.Row():
@@ -88,7 +88,14 @@ def build_playground(
             line_breaks=True,
         )
 
-            
+        message_type = gr.Markdown(
+            value="🧪 Test Type: Playground",
+        )   
+
+        id_name_comparison = gr.Code(
+            value="",
+            language="json",
+        )
 
         with gr.Row():
             token_cost = gr.Markdown(
@@ -105,7 +112,7 @@ def build_playground(
         refresh_btn.click(
             fn=get_segments,
             inputs=[log_segment_id],
-            outputs=[log_segment_id],
+            outputs=[log_segment_id, id_name_comparison],
         )
         
 
@@ -118,12 +125,12 @@ def build_playground(
         log_segment_id.change(
             fn=get_row_chat_history,
             inputs=log_segment_id,
-            outputs=[row_chat_history, prev_summarized_ticket_content],
+            outputs=[row_chat_history, message_type],
         )
 
         row_chat_history.change(
             fn=get_summarized_ticket_content,
-            inputs=[log_segment_id, row_chat_history],
+            inputs=[log_segment_id, row_chat_history, message_type],
             outputs=[prev_summarized_ticket_subject, summarized_ticket_conent],
         )
 
