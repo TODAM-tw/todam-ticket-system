@@ -88,7 +88,7 @@ def build_playground(
             line_breaks=True,
         )
 
-        test_type = gr.Markdown(
+        message_type = gr.Markdown(
             value="🧪 Test Type: Playground",
         )   
 
@@ -125,12 +125,12 @@ def build_playground(
         log_segment_id.change(
             fn=get_row_chat_history,
             inputs=log_segment_id,
-            outputs=[row_chat_history, test_type],
+            outputs=[row_chat_history, message_type],
         )
 
         row_chat_history.change(
             fn=get_summarized_ticket_content,
-            inputs=[log_segment_id, row_chat_history, test_type],
+            inputs=[log_segment_id, row_chat_history, message_type],
             outputs=[prev_summarized_ticket_subject, summarized_ticket_conent],
         )
 
