@@ -33,7 +33,10 @@ def get_segments(
     segment_names = [segment["segment_name"] for segment in data["segments"]]
     group_ids = [segment["group_id"] for segment in data["segments"]]
 
-    segment_id_name_dict = str(dict(zip(segment_ids, segment_names)))
+
+    segment_id_name_map = {segment["segment_id"]: segment["segment_name"] for segment in data["segments"]}
+
+    segment_id_name_map_str = json.dumps(segment_id_name_map, ensure_ascii=False, indent=4)
 
     log_segment = gr.Dropdown(
         label="🚘 Log Segment Records (ID)",
@@ -44,7 +47,7 @@ def get_segments(
         multiselect=None,
     )
 
-    return log_segment, segment_id_name_dict
+    return log_segment, segment_id_name_map_str
 
 
 
