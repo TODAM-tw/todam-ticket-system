@@ -5,7 +5,6 @@ import requests
 from dotenv import find_dotenv, load_dotenv
 from requests.models import Response
 
-
 row_chat_history = [
     (None, '我們的虛擬機器在 Azure 上運行，配置為 Linux，VM 世代為 V1，架構是 x64，休眠已禁用，公共 IP 地址為 20.253.222.207（網絡接口為 adam-linux580），私有 IP 地址為 10.0.3.4，虛擬網絡/子網絡為 adam-vnet/adam-private-1，規模為標準 B2s（2 vCPUs、4 GiB RAM），磁盤為 adam-disk-linux（主機加密已禁用，未啟用 Azure 磁盤加密），安全類型為標準。我們最近遇到了 504 錯誤，您能幫忙分析問題所在嗎？'),
     (None, """'IMAGE_URL' = 'https://todam-bucket-478977890696-us-east-1.s3.amazonaws.com/jpg/test_azure.png' The image shows the configuration details of a virtual machine (VM) running on a cloud platform, likely Microsoft Azure. Here are the key details: - Operating System: Linux - VM Generation: V1: - VM Architecture: x64: - Hibernation: Disabled: - Public IP Address: 20.253.222.207 (Network interface adam-linux580): - Private IP Address: 10.0.3.4: - Virtual Network/Subnet: adam-vnet/adam-private-- Size: Standard B2s (2 vCPUs, 4 GiB RAM): - Disk: adam-disk-linux (Encryption at host disabled, Azure disk encryption not enabled): - Security Type: Standard, The VM does not appear to be part of any host group, availability set, or scale set. The source image details, disk controller type, and capacity reservation group are not specified. The overall configuration seems to be for a basic Linux VM with standard networking and disk settings on Azure."""), 
@@ -83,4 +82,19 @@ print(body[0]["content"][0])
 print(body[0]["content"][0]["text"])
 print(type(body[0]["content"][0]["text"]))
 
+content_text = body[0]["content"][0]["text"]    # str
+content_text = json.loads(content_text)   # dict
+
+print(type(content_text))
+
+print(content_text["subject"])
+print(content_text["transcript"])
+print(type(content_text["transcript"])) # list
+
+# print(content_text["transcript"][0])
+print(type(content_text["transcript"][0]))
+
+for i in range(len(content_text["transcript"])):
+    print(content_text["transcript"][i]["submittedBy"])
+    print(content_text["transcript"][i]["content"])
 
