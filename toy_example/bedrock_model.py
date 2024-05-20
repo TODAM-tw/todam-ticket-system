@@ -56,7 +56,8 @@ headers = {
 }
 
 response: Response = requests.request(
-    "POST", bedrock_api_url, 
+    "POST", 
+    bedrock_api_url,
     headers=headers, 
     data=payload
 )
@@ -67,3 +68,19 @@ if response.status_code == 200:
     data: dict = json.loads(response.text)
 
 print(data)
+print(type(data))
+
+
+print(data["statusCode"])
+print(data["body"])
+
+body = json.loads(data["body"])
+
+print(body[0]["id"])
+print(body[0]["content"])
+print(type(body[0]["content"]))
+print(body[0]["content"][0])
+print(body[0]["content"][0]["text"])
+print(type(body[0]["content"][0]["text"]))
+
+
