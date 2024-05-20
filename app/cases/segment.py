@@ -7,7 +7,7 @@ from dotenv import find_dotenv, load_dotenv
 
 
 def get_segments(
-        log_segment: gr.Dropdown) -> gr.Dropdown:
+        log_segment: gr.Dropdown, str) -> tuple[gr.Dropdown, str]:
     """
     Get segments from the API
 
@@ -33,6 +33,8 @@ def get_segments(
     segment_names = [segment["segment_name"] for segment in data["segments"]]
     group_ids = [segment["group_id"] for segment in data["segments"]]
 
+    segment_id_name_dict = str(dict(zip(segment_ids, segment_names)))
+
     log_segment = gr.Dropdown(
         label="🚘 Log Segment Records (ID)",
         info="Select a Record Segment to summerize with 👇🏻",
@@ -40,22 +42,15 @@ def get_segments(
         choices=segment_ids,
         interactive=True,
         multiselect=None,
-        # visible=False,
     )
 
-    log_segment_name = gr.Dropdown(
-        label="🚘 Log Segment Records (Name)",
-        info="Select a Record Segment to summerize with 👇🏻",
-        value=segment_names[0],
-        choices=segment_names,
-        interactive=True,
-        multiselect=None,
-    )
-
-    return log_segment
+    return log_segment, segment_id_name_dict
 
 
 
+# TODO: 
+# Need to be researched to wrap the following code into a class
+# and we can get the comparison between segment id and segment name.
 class LogSegment:
     """
     LogSegment class
@@ -75,9 +70,8 @@ class LogSegment:
         """
         self.segment_id = segment_id
         return self.segment_id
-    
-    
-    
+
+
 if __name__ == "__main__":
     log_segment = gr.Dropdown(
         label="🚘 Log Segment Records",
