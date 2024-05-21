@@ -2,16 +2,14 @@ import os
 
 import gradio as gr
 import requests
-from dotenv import find_dotenv, load_dotenv
 
 
 def send_summarized_ticket_content(
     ticket_subject: gr.HTML, summerized_ticket_content: gr.Dropdown, 
     log_segment_subject: gr.Markdown) -> str:
-    _ = load_dotenv(find_dotenv())
-    department_id        : str = os.environ['DEPARTMENT_ID']
-    submit_ticket_api_url: str = os.environ['SUBMIT_TICKET_API_URL']
-
+    submit_ticket_api_url    : str = os.environ.get('SUBMIT_TICKET_API_URL')
+    department_id            : str = os.environ.get('DEPARTMENT_ID')
+    
     ticket_subject = remove_subject_tag(ticket_subject)
 
     payload = {

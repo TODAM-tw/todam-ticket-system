@@ -3,7 +3,6 @@ import os
 
 import gradio as gr
 import requests
-from dotenv import find_dotenv, load_dotenv
 
 
 def get_segments(
@@ -17,8 +16,7 @@ def get_segments(
     Returns:
         gr.Dropdown: Dropdown object
     """
-    _ = load_dotenv(find_dotenv())
-    list_log_segment_api_url: str = os.environ['LIST_LOG_SEGMENT_API_URL']
+    list_log_segment_api_url : str = os.environ.get('LIST_LOG_SEGMENT_API_URL')
 
     payload = {}
     headers = {}

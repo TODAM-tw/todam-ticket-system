@@ -3,17 +3,14 @@ import os
 
 import gradio as gr
 import requests
-from dotenv import find_dotenv, load_dotenv
 from requests.models import Response
 
 
 def get_summarized_ticket_content(
         log_segment: gr.Dropdown, row_chat_history: gr.Chatbot, message_types: str) -> tuple[str, str]:
-    _ = load_dotenv(find_dotenv())
-    bedrock_api_url: str = os.environ['BEDROCK_API_URL']
-
     message_types_list = convert_message_types_to_list(message_types)
-
+    bedrock_api_url: str = os.environ.get('BEDROCK_API_URL')
+    
     result = []
     current_user_type = None
 

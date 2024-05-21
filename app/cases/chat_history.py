@@ -2,7 +2,6 @@ import json
 import os
 
 import requests
-from dotenv import find_dotenv, load_dotenv
 
 # TODO:
 # 1. 需要有能力去 Handle Dropdown 是空的情況 -> 具體要回傳什麼給 gradio
@@ -10,10 +9,8 @@ from dotenv import find_dotenv, load_dotenv
 
 def get_row_chat_history(
         log_segment_subject: str) -> tuple[tuple[str, str], str]:
-    _ = load_dotenv(find_dotenv())
-    list_chat_history_api_url: str = os.environ['LIST_CHAT_HISTORY_API_URL']
+    list_chat_history_api_url: str = os.environ.get('LIST_CHAT_HISTORY_API_URL')
     url = f"{list_chat_history_api_url}/messages?segment_id={log_segment_subject}"
-
     headers = {}
     payload = {}
 
