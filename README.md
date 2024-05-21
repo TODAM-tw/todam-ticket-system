@@ -9,6 +9,13 @@ Python version `python3.11` or later with [`poetry`](https://python-poetry.org/)
 > [!IMPORTANT]
 > If you have not installed `poetry`, please install it by following the [official guide](https://python-poetry.org/docs/#installation)
 
+## Required Dependencies
+
+- `gradio = "^4.31.0"`
+- `uvicorn = "^0.29.0"`
+- `aws-cdk-lib = "^2.141.0"`
+- `constructs = "^10.3.0"`
+- `mangum = "^0.17.0"`
 
 ### Build `venv` for **MacOS**
 ```shell
@@ -29,34 +36,43 @@ $ rmdir /s venv     # remove the venv
 
 ### Run web app
 
-Edit the `.env` file with your own token.
+Edit the `.env` file with your own token. Also need to follow the mode of the web app.
 
 ```shell
-$ cp .env.example .env
+$ cp .env.example .env.<MODE>
 ```
 
 ```shell
-# Azure ML Part
-AZURE_ML_TOKEN="YOUR_AZURE_ML_TOKEN"
-AZURE_ML_DEPLOYED_URL="YOUR_AZURE_ML_DEPLOYED_URL"
-AZURE_MODEL_DEPLOYMENT="YOUR_AZURE_MODEL_DEPLOYMENT"
-
 # Ticket System Part
 DEPARTMENT_ID="MSP_ID"
 
-# API Endpoint
+# API Endpoint Part
 SUBMIT_TICKET_API_URL="DEPLOYED_SUBMIT_TICKET_API_URL"
 LIST_LOG_SEGMENT_API_URL="DEPLOYED_LIST_LOG_SEGMENT_API_URL"
 LIST_CHAT_HISTORY_API_URL="DEPLOYED_LIST_CHAT_HISTORY_API_URL"
+BEDROCK_API_URL="DEPLOYED_BEDROCK_API_URL"
+
+# AWS CDK Part
+CDK_DEFAULT_ACCOUNT="YOUR_AWS_CDK_DEFAULT_ACCOUNT"
+CDK_DEFAULT_REGION="YOUR_AWS_CDK_DEFAULT_REGION"
 ```
 
+Run the web app with the following command.
 ```shell
-$ ./scripts/run.sh
+# run the web app in development mode
+$ python app.py --port 8080 --dev
+# run the web app in test mode
+$ python app.py --port 8080 --test
+# run the web app in production mode
+$ python app.py --port 8080 --prod
+
+# Also you can customize the port number
+$ python app.py --port 8081 --dev
 ```
 
 ## Deployment
 
-with `docker` and `docker-compose` installed, you can build and run the docker image.
+with `docker` installed, you can build and run the docker image.
 
 ### Build the docker image
 
@@ -66,14 +82,10 @@ $ docker build -t todam-ticket-system:<TAG_NAME> .
 $ docker run -p 8080:8080 todam-ticket-system:<TAG_NAME>
 ```
 
-### Run the docker container
+
+### Deploy to AWS Lambda Function with AWS CDK
+
 ```shell
-# build the docker image and run the container
-$ docker-compose up -d
-# follow the logs
-$ docker-compose logs -f
-# stop the container but keep the container
-$ docker-compose stop
-# stop the container and discard the container
-$ docker-compose down
+$ cdk bootstrap
+$ cdk deploy
 ```
