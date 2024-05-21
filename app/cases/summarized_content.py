@@ -8,7 +8,7 @@ from requests.models import Response
 
 
 def get_summarized_ticket_content(
-        log_segment: gr.Dropdown, row_chat_history: gr.Chatbot, message_types) -> tuple[str, str]:
+        log_segment: gr.Dropdown, row_chat_history: gr.Chatbot, message_types: str) -> tuple[str, str]:
     _ = load_dotenv(find_dotenv())
     bedrock_api_url: str = os.environ['BEDROCK_API_URL']
 
@@ -55,7 +55,14 @@ def get_summarized_ticket_content(
         return "Error: Something went wrong with the API"
 
     body = json.loads(data["body"])
-    body = body[0]
+
+    if type(body) == list:
+        body = body[0]
+    elif type(body) == dict:
+        pass
+    else :
+        return """Error: the output of data["body"] is not a list or dict"""
+
     content = body["content"]   # list
     content = content[0]
 

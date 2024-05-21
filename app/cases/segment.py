@@ -7,7 +7,7 @@ from dotenv import find_dotenv, load_dotenv
 
 
 def get_segments(
-        log_segment: gr.Dropdown, str) -> tuple[gr.Dropdown, str]:
+        log_segment: gr.Dropdown) -> tuple[gr.Dropdown, str]:
     """
     Get segments from the API
 

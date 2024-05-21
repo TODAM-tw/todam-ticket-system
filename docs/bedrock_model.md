@@ -94,6 +94,44 @@ print(type(body))
 <class 'list'>
 ```
 
+## `body` - v2
+
+```python
+body = json.loads(data["body"])
+if type(body) == list:
+    body = body[0]
+elif type(body) == dict:
+    pass
+else :
+    return """Error: the output of data["body"] is not a list or dict"""
+
+print(body)
+print(type(body))
+```
+
+### Output
+
+```python
+{
+    'id': 'msg_01VKZ6aCRi8gJJdgSmRZPqYV', 
+    'type': 'message', 
+    'role': 'assistant', 
+    'content': [
+        {
+            'type': 'text', 
+            'text': '{\n  "subject": "Azure Linux VM Performance Issues and Optimization",\n  "caseId": null,\n  "startDate": null,\n  "transcript": [\n    {"submittedBy":"Client", "content":"We have a virtual machine running on Azure with Linux OS. It\'s a Generation V1, x64 architecture with hibernation disabled. The public IP is 20.253.222.207 (network interface adam-linux580), private IP is 10.0.3.4, virtual network/subnet is adam-vnet/adam-private-1. The size is Standard B2s (2 vCPUs, 4 GiB RAM). The disk is adam-disk-linux with host encryption disabled and Azure disk encryption not enabled. The security type is Standard. We\'ve been facing 504 errors recently, could you help analyze the issue?"},\n    {"submittedBy":"Client", "content":"<img src=\\"https://todam-bucket-478977890696-us-east-1.s3.amazonaws.com/jpg/Cc6382b90d7a72591da1b699c7bc73237-2024-05-20-05-47-03-344855.jpg\\" />\\n\\nThe image shows the configuration details of a virtual machine (VM) running on a cloud platform, likely Microsoft Azure. Here are the key details:\\n\\n- Operating System: Linux\\n- VM Generation: V1\\n- VM Architecture: x64\\n- Hibernation: Disabled\\n- Public IP Address: 20.253.222.207 (Network interface adam-linux580)\\n- Private IP Address: 10.0.3.4\\n- Virtual Network/Subnet: adam-vnet/adam-private-1\\n- Size: Standard B2s (2 vCPUs, 4 GiB RAM)\\n- Disk: adam-disk-linux (Encryption at host disabled, Azure disk encryption not enabled)\\n- Security Type: Standard\\n\\nThe VM does not appear to be part of any host group, availability set, or scale set. The source image details, availability zone, capacity reservation group, and disk controller type are not specified in the provided information."},\n    {"submittedBy":"TAM", "content":"Sorry to hear you\'re facing 504 errors. This could be related to your virtual machine\'s performance or connectivity. Please ensure your VM\'s resource utilization is reasonable and not being throttled, especially under high load. Also, check your network settings to ensure a stable and unobstructed connection to Azure. You can review Azure\'s monitoring tools to view the VM\'s performance metrics and network status. If the issue persists, you may need further investigation or to contact Azure technical support for assistance. Do you have any other questions?"},\n    {"submittedBy":"Client", "content":"Thank you for your response. We will check and resolve the issue as per your suggestions. Additionally, we have another question regarding VM performance tuning. Our VM performs poorly under high load, could you provide some recommendations for performance optimization?"},\n    {"submittedBy":"TAM", "content":"When your virtual machine performs poorly under high load, you can consider the following points for performance optimization: First, check the VM\'s resource allocation and consider increasing vCPUs and RAM to handle higher loads. Second, optimize your applications and services to efficiently utilize the VM\'s resources. Additionally, you can consider using Azure\'s Load Balancer to distribute traffic across multiple VMs. Finally, monitor system performance and continuously optimize and adjust to ensure optimal performance. These are suggestions that can help improve VM performance, and you can adjust and implement them based on your specific situation. Do you have any other questions that need assistance?"}\n  ]\n}'
+        }
+    ], 
+    'model': 'claude-3-sonnet-28k-20240229', 
+    'stop_reason': 'end_turn', 
+    'stop_sequence': None, 
+    'usage': {
+        'input_tokens': 1668, 
+        'output_tokens': 838
+    }
+}
+```
+
 ## `body[0]`
 
 ```python

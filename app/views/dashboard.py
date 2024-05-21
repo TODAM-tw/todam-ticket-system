@@ -1,3 +1,4 @@
+import json
 from typing import Any
 
 import gradio as gr
@@ -142,7 +143,7 @@ def build_playground(
 
         regenerate_summarized_ticket_content_btn.click(
             fn=get_summarized_ticket_content,
-            inputs=[log_segment_id, row_chat_history],
+            inputs=[log_segment_id, row_chat_history, message_type],
             outputs=[prev_summarized_ticket_subject, summarized_ticket_conent],
         )
 
