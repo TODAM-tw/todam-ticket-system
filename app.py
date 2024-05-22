@@ -1,4 +1,5 @@
 import argparse
+from pathlib import Path
 from typing import Any
 
 from dotenv import load_dotenv
@@ -30,19 +31,26 @@ def main(*args: Any, **kwargs: Any,) -> None:
     
     args = parser.parse_args()
 
+    project_root = Path(__file__).parent
+    env_path = None
+
     if args.prod:
-        load_dotenv(".env.prod", override=True)
+        env_path = project_root / ".env.prod"
     elif args.test:
-        load_dotenv(".env.test", override=True)
+        env_path = project_root / ".env.test"
     elif args.dev:
-        load_dotenv(".env.dev", override=True)
+        env_path = project_root / ".env.dev"
     else:
-        load_dotenv(".env", override=True)
+        env_path = project_root / ".env"
+
+    load_dotenv(env_path, override=True)
 
     demo = build_playground()
     demo.launch(
         server_port=args.port
     )
+
+    return None
 
 if __name__ == "__main__":
     main()
