@@ -83,11 +83,13 @@ def build_playground(
 
         message_type = gr.Markdown(
             value="🧪 Test Type: Playground",
+            visible=False,
         )   
 
         id_name_comparison = gr.Code(
             value="",
             language="json",
+            visible=False,
         )
 
         with gr.Row():
