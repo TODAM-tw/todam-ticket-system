@@ -22,19 +22,11 @@ def build_playground(
         with gr.Row():
 
             with gr.Column(scale=1):
-                # Need to be researched to get the latest log segments
-                # log_segment_name = gr.Dropdown(
-                #     label="🚘 Log Segment Records (Name)",
-                #     info="Select a Record Segment to summerize with 👇🏻",
-                #     interactive=True,
-                #     multiselect=None,
-                # )
-                log_segment_id = gr.Dropdown(
-                    label="🚘 Log Segment Records (ID)",
+                log_segment_name = gr.Dropdown(
+                    label="🚘 Log Segment Records (Name)",
                     info="Select a Record Segment to summerize with 👇🏻",
                     interactive=True,
                     multiselect=None,
-                    # visible=False,
                 )
                 refresh_btn = gr.Button(
                     variant="secondary",
@@ -112,27 +104,16 @@ def build_playground(
 
         refresh_btn.click(
             fn=get_segments,
-            inputs=[log_segment_id],
-            outputs=[log_segment_id, id_name_comparison],
+            inputs=[log_segment_name],
+            outputs=[log_segment_name, id_name_comparison],
         )
         
 
-        # log_segment_name.change(
-        #     fn=get_row_chat_history,
-        #     inputs=log_segment_id,
-        #     outputs=[log_segment_id, row_chat_history, prev_summarized_ticket_content],
-        # )
 
-        log_segment_id.change(
+        log_segment_name.change(
             fn=get_row_chat_history,
-            inputs=log_segment_id,
+            inputs=[log_segment_name, id_name_comparison],
             outputs=[row_chat_history, message_type],
-        )
-
-        row_chat_history.change(
-            fn=get_summarized_ticket_content,
-            inputs=[log_segment_id, row_chat_history, message_type],
-            outputs=[prev_summarized_ticket_subject, summarized_ticket_conent],
         )
 
         summarized_ticket_conent.change(
@@ -141,15 +122,21 @@ def build_playground(
             outputs=prev_summarized_ticket_content,
         )
 
+        row_chat_history.change(
+            fn=get_summarized_ticket_content,
+            inputs=[log_segment_name, id_name_comparison, row_chat_history, message_type],
+            outputs=[prev_summarized_ticket_subject, summarized_ticket_conent],
+        )
+
         regenerate_summarized_ticket_content_btn.click(
             fn=get_summarized_ticket_content,
-            inputs=[log_segment_id, row_chat_history, message_type],
+            inputs=[log_segment_name, id_name_comparison, row_chat_history, message_type],
             outputs=[prev_summarized_ticket_subject, summarized_ticket_conent],
         )
 
         submit_summarized_btn.click(
             fn=send_summarized_ticket_content,
-            inputs=[prev_summarized_ticket_subject, summarized_ticket_conent, log_segment_id],
+            inputs=[prev_summarized_ticket_subject, summarized_ticket_conent, log_segment_name, id_name_comparison,],
             outputs=submit_status,
         )
 

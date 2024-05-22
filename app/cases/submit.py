@@ -2,23 +2,23 @@ import os
 
 import gradio as gr
 import requests
-from dotenv import find_dotenv, load_dotenv
 
+from app.utils.update import render_segment_id
 
 def send_summarized_ticket_content(
     ticket_subject: gr.HTML, summerized_ticket_content: gr.Dropdown, 
-    log_segment_subject: gr.Markdown) -> str:
-    _ = load_dotenv(find_dotenv())
-    department_id        : str = os.environ['DEPARTMENT_ID']
-    submit_ticket_api_url: str = os.environ['SUBMIT_TICKET_API_URL']
+    log_segment_name, id_name_comparison,) -> str:
 
-    ticket_subject = remove_subject_tag(ticket_subject)
+    submit_ticket_api_url: str = os.environ.get('SUBMIT_TICKET_API_URL')
+    department_id        : str = os.environ.get('DEPARTMENT_ID')
+    log_segment_id       : str = render_segment_id(log_segment_name, id_name_comparison)
+    ticket_subject       : str = remove_subject_tag(ticket_subject)
 
     payload = {
         "ticket_subject"    : ticket_subject,
         "ticket_description": summerized_ticket_content,
         "department_id"     : department_id,
-        "segment_id"        : log_segment_subject
+        "segment_id"        : log_segment_id
     }
 
     headers = {
