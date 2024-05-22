@@ -5,9 +5,14 @@ import gradio as gr
 import requests
 from requests.models import Response
 
+from app.utils.update import render_segment_id
+
 
 def get_summarized_ticket_content(
-        log_segment: gr.Dropdown, row_chat_history: gr.Chatbot, message_types: str) -> tuple[str, str]:
+        log_segment_name: str, id_name_comparison: str, 
+        row_chat_history: gr.Chatbot, message_types: str) -> tuple[str, str]:
+    
+    log_segment_id = render_segment_id(log_segment_name, id_name_comparison)
     message_types_list = convert_message_types_to_list(message_types)
     bedrock_api_url: str = os.environ.get('BEDROCK_API_URL')
     
@@ -70,7 +75,7 @@ def get_summarized_ticket_content(
     subject: str = content_text_dict["subject"]
     content_transcripts: list = content_text_dict["transcript"]    # list
 
-    case_id = log_segment
+    case_id = log_segment_id
 
     transcript_output = ""
 

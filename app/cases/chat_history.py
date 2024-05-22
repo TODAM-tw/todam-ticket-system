@@ -3,14 +3,21 @@ import os
 
 import requests
 
+from app.utils.update import render_segment_id
+
 # TODO:
 # 1. 需要有能力去 Handle Dropdown 是空的情況 -> 具體要回傳什麼給 gradio
 
 
 def get_row_chat_history(
-        log_segment_subject: str) -> tuple[tuple[str, str], str]:
+        log_segment_name: str, id_name_comparison: str) -> tuple[tuple[str, str], str]:
+    """
+    Get the chat history of the segment
+    """
+
+    log_segment_id = render_segment_id(log_segment_name, id_name_comparison)
     list_chat_history_api_url: str = os.environ.get('LIST_CHAT_HISTORY_API_URL')
-    url = f"{list_chat_history_api_url}/messages?segment_id={log_segment_subject}"
+    url = f"{list_chat_history_api_url}/messages?segment_id={log_segment_id}"
     headers = {}
     payload = {}
 

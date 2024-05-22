@@ -6,7 +6,7 @@ import requests
 
 
 def get_segments(
-        log_segment: gr.Dropdown) -> tuple[gr.Dropdown, str]:
+        log_segment_name: gr.Dropdown) -> tuple[gr.Dropdown, gr.Dropdown, str]:
     """
     Get segments from the API
 
@@ -16,10 +16,13 @@ def get_segments(
     Returns:
         gr.Dropdown: Dropdown object
     """
+
     list_log_segment_api_url : str = os.environ.get('LIST_LOG_SEGMENT_API_URL')
 
-    payload = {}
-    headers = {}
+    headers = {
+    }
+    payload = {
+    }
 
     response = requests.request(
         method="GET", url=list_log_segment_api_url, headers=headers, data=payload
@@ -36,7 +39,7 @@ def get_segments(
 
     segment_id_name_map_str = json.dumps(segment_id_name_map, ensure_ascii=False, indent=4)
 
-    log_segment = gr.Dropdown(
+    log_segment_id = gr.Dropdown(
         label="🚘 Log Segment Records (ID)",
         info="Select a Record Segment to summerize with 👇🏻",
         value=segment_ids[0],
@@ -45,7 +48,16 @@ def get_segments(
         multiselect=None,
     )
 
-    return log_segment, segment_id_name_map_str
+    log_segment_name = gr.Dropdown(
+        label="🚘 Log Segment Records (Name)",
+        info="Select a Record Segment to summerize with 👇🏻",
+        value=segment_names[0],
+        choices=segment_names,
+        interactive=True,
+        multiselect=None,
+    )
+
+    return log_segment_name, segment_id_name_map_str
 
 
 
