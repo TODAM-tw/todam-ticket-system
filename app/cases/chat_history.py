@@ -37,6 +37,9 @@ def get_row_chat_history(
     if response.status_code == 200:
         data = json.loads(response.text)
 
+    # TODO: Refactor this part with the index of the messages
+    #       because the current index is not clear
+    #       to understand why we need to pop the first and last messages
     # Check if the first and last messages are 'start recording' and 'end recording' respectively
     if data["messages"] and data["messages"][0]["content"] == 'start recording':
         data["messages"].pop(0)
