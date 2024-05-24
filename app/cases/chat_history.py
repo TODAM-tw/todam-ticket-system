@@ -37,6 +37,14 @@ def get_row_chat_history(
     if response.status_code == 200:
         data = json.loads(response.text)
 
+    # Check if the first and last messages are 'start recording' and 'end recording' respectively
+    if data["messages"] and data["messages"][0]["content"] == 'start recording':
+        data["messages"].pop(0)
+
+    if data["messages"] and data["messages"][-1]["content"] == 'end recording':
+        data["messages"].pop()
+
+
     segment_contents: list[dict] = data["messages"]
     row_chat_history, message_types = extract_chat_history(segment_contents)
 
