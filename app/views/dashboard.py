@@ -5,7 +5,7 @@ import gradio as gr
 from app.cases.chat_history import get_row_chat_history
 from app.cases.segment import get_segment_names
 from app.cases.submit import send_summarized_ticket_content
-from app.cases.summarized_content import get_summarized_ticket_content
+from app.cases.ticket_summarized import get_summarized_ticket_content
 from app.utils.update import render_preview
 
 def build_playground(
