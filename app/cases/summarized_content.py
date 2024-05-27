@@ -6,7 +6,6 @@ import requests
 from requests.models import Response
 
 from app.utils.recording_contents import convert_message_types_to_list
-from app.utils.update import render_segment_id
 
 
 def get_summarized_ticket_content(
@@ -26,7 +25,6 @@ def get_summarized_ticket_content(
         - summerized_ticket_content (str): The summarized ticket content.
     """
 
-    log_segment_id = render_segment_id(log_segment_name, id_name_comparison)
     message_types_list = convert_message_types_to_list(message_types)
     bedrock_api_url: str = os.environ.get('BEDROCK_API_URL')
     
@@ -97,7 +95,6 @@ def get_summarized_ticket_content(
 
     for i in range(len(content_transcripts)):
         transcript_output += f"<blockquote><h3>Submitted by {content_transcripts[i]['submittedBy']}</h3>{content_transcripts[i]['content']}</blockquote>\n"
-
 
     subject_output = f"<h1>Subject: {subject}</h1>"
     summerized_ticket_content = f"<div>\n<h3>Case Name: {log_segment_name}</h3>\n{transcript_output}\n</div>"
