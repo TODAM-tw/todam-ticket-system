@@ -1,4 +1,3 @@
-import json
 from typing import Any
 
 import gradio as gr
@@ -76,11 +75,6 @@ def build_playground(
                         value="🕹️ Submit to Ticket System",
                     )
 
-        submit_status = gr.Markdown(
-            value="🚦 Submit Status: Pending",
-            line_breaks=True,
-        )
-
         message_type = gr.Markdown(
             value="🧪 Test Type: Playground",
             visible=False,
@@ -101,14 +95,17 @@ def build_playground(
                 "🔒 Token Usage:"
             )
 
+            submit_status = gr.Markdown(
+                value="🚦 Submit Status: Pending",
+                line_breaks=True,
+            )
+
         refresh_btn.click(
             fn=get_segment_names,
             inputs=[log_segment_name],
             outputs=[log_segment_name, id_name_comparison],
         )
         
-
-
         log_segment_name.change(
             fn=get_row_chat_history,
             inputs=[log_segment_name, id_name_comparison],
