@@ -11,6 +11,19 @@ from app.utils.update import render_segment_id
 def get_summarized_ticket_content(
         log_segment_name: str, id_name_comparison: str, 
         row_chat_history: gr.Chatbot, message_types: str) -> tuple[str, str]:
+    """
+    Get the summarized ticket content from the Bedrock API.
+
+    Args:
+        - log_segment_name (str): The name of the log segment.
+        - id_name_comparison (str): The comparison between the ID and name.
+        - row_chat_history (gr.Chatbot): The chat history.
+        - message_types (str): The message types.
+
+    Returns:
+        - subject_output (str): The subject of the ticket.
+        - summerized_ticket_content (str): The summarized ticket content.
+    """
 
     log_segment_id = render_segment_id(log_segment_name, id_name_comparison)
     message_types_list = convert_message_types_to_list(message_types)
@@ -41,7 +54,7 @@ def get_summarized_ticket_content(
         'Content-Type': 'application/json'
     }
 
-    payload = json.dumps({"input": result})     # 要再包一層 input
+    payload: str = json.dumps({"input": result})     # 要再包一層 input
 
     response: Response = requests.request(
         "POST", bedrock_api_url, 
@@ -65,17 +78,19 @@ def get_summarized_ticket_content(
     else :
         return """Error: the output of data["body"] is not a list or dict"""
 
-    content = body["content"]   # list
+    usage: dict[int, int] = body["usage"]
+    input_tokens: int = usage["input_tokens"]
+    output_tokens: int = usage["output_tokens"]
+
+    content: list = body["content"]
     content = content[0]
 
-    content_text = content["text"]  # str
+    content_text: str = content["text"]
 
-    content_text_dict: dict = json.loads(content_text)   # dict
+    content_text_dict: dict = json.loads(content_text)
     
     subject: str = content_text_dict["subject"]
-    content_transcripts: list = content_text_dict["transcript"]    # list
-
-    case_id = log_segment_id
+    content_transcripts: list = content_text_dict["transcript"]
 
     transcript_output = ""
 
