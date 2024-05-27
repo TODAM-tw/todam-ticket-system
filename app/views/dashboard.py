@@ -4,7 +4,7 @@ from typing import Any
 import gradio as gr
 
 from app.cases.chat_history import get_row_chat_history
-from app.cases.segment import get_segments
+from app.cases.segment import get_segment_names
 from app.cases.submit import send_summarized_ticket_content
 from app.cases.summarized_content import get_summarized_ticket_content
 
@@ -83,11 +83,13 @@ def build_playground(
 
         message_type = gr.Markdown(
             value="🧪 Test Type: Playground",
+            visible=False,
         )   
 
         id_name_comparison = gr.Code(
             value="",
             language="json",
+            visible=False,
         )
 
         with gr.Row():
@@ -103,7 +105,7 @@ def build_playground(
             )
 
         refresh_btn.click(
-            fn=get_segments,
+            fn=get_segment_names,
             inputs=[log_segment_name],
             outputs=[log_segment_name, id_name_comparison],
         )

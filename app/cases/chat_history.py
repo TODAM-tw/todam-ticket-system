@@ -3,6 +3,7 @@ import os
 
 import requests
 
+from app.utils.data_type import extract_chat_history
 from app.utils.update import render_segment_id
 
 # TODO:
@@ -13,47 +14,41 @@ def get_row_chat_history(
         log_segment_name: str, id_name_comparison: str) -> tuple[tuple[str, str], str]:
     """
     Get the chat history of the segment
+
+    Args:
+        - log_segment_name: the name of the segment
+        - id_name_comparison: the comparison of the segment name and id
+
+    Returns:
+        - row_chat_history: the chat history of the segment
+        - message_types: the types of the messages
     """
 
-    log_segment_id = render_segment_id(log_segment_name, id_name_comparison)
+    log_segment_id           : str = render_segment_id(log_segment_name, id_name_comparison)
     list_chat_history_api_url: str = os.environ.get('LIST_CHAT_HISTORY_API_URL')
+
     url = f"{list_chat_history_api_url}/messages?segment_id={log_segment_id}"
     headers = {}
     payload = {}
+    data = {}
 
     response = requests.request(
         "GET", url, headers=headers, data=payload)
     if response.status_code == 200:
         data = json.loads(response.text)
 
-    messages = data["messages"]
+    # TODO: Refactor this part with the index of the messages
+    #       because the current index is not clear
+    #       to understand why we need to pop the first and last messages
+    # Check if the first and last messages are 'start recording' and 'end recording' respectively
+    if data["messages"] and data["messages"][0]["content"] == 'start recording':
+        data["messages"].pop(0)
 
-    row_chat_history = []
-    types = []
+    if data["messages"] and data["messages"][-1]["content"] == 'end recording':
+        data["messages"].pop()
 
-    for message in messages:
-        types.append(message["message_type"])
-        if message["user_type"] == "Client":
-            row_chat_history.append((None, message["content"]))
-        elif message["user_type"] == "TAM":
-            row_chat_history.append((message["content"], None))
 
-    # TODO
-    # Add Loading Animation
-    # prev_summerized_ticket_content = """<img src="https://img.pikbest.com/png-images/20190918/cartoon-snail-loading-loading-gif-animation_2734139.png!f305cw" alt="cartoon snail loading" />"""
+    segment_contents: list[dict] = data["messages"]
+    row_chat_history, message_types = extract_chat_history(segment_contents)
 
-    return row_chat_history, str(types)
-    # TODO
-    # Add Loading Animation
-    # return row_chat_history, prev_summerized_ticket_content
-
-def process_tickets(tickets):
-    processed_tickets = []
-    for ticket in tickets:
-        role = ticket.get("Role")
-        description = ticket.get("Description")
-        if role == "Client":
-            processed_tickets.append((None, description))
-        elif role == "TAM":
-            processed_tickets.append((description, None))
-    return processed_tickets
+    return row_chat_history, message_types
