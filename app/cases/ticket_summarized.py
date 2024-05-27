@@ -5,7 +5,7 @@ import requests
 from requests.models import Response
 
 from app.utils.summarized import (calculate_token_cost, extract_payload_inputs,
-                                  format_summarized_transcripts)
+                                  format_summarized_transcripts, extract_content_text)
 
 
 def get_summarized_ticket_content(
@@ -64,24 +64,13 @@ def get_summarized_ticket_content(
     else :
         return """Error: the output of data["body"] is not a list or dict"""
 
-    token_usage, token_cost = calculate_token_cost(
-        body, COST_PER_INPUT_TOKEN, COST_PER_OUTPUT_TOKEN
-    )
+    content_text = extract_content_text(body)
 
-    # TODO
-    # 現有處理 `content["text"]` 的作法可能會因為 Model 的 output 產生 error 
-    # 因為 Model 可能會產生 <code>\`\`\`json \`\`\`</code> 把 `content["text"]` 
-    # 裡的內容包裝起來，因此可以加上 `if-elif` 判斷去特別處理這個例外以避免
-    # 產生 Error 導致系統無法正常運行。
-    # 
-    # > [!NOTE]
-    # > 或許還可以同時加上 <code>\`\`\` \`\`\`</code> 的例外處理，以更全面地避免模型加入 <code>\`\`\`</code>
-
-    content: str = body["content"][0]
-    content_text: dict = json.loads(content["text"])
-    
     subject_title, summerized_ticket_content = format_summarized_transcripts(
         log_segment_name, content_text
+    )
+    token_usage, token_cost = calculate_token_cost(
+        body, COST_PER_INPUT_TOKEN, COST_PER_OUTPUT_TOKEN
     )
     
     return subject_title, summerized_ticket_content, token_usage, token_cost

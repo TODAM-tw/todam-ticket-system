@@ -1,3 +1,5 @@
+import json
+
 from app.utils.recording_contents import convert_message_types_to_list
 
 
@@ -94,3 +96,36 @@ def format_summarized_transcripts(
     summerized_ticket_content = f"<div>\n<h3>Case Name: {log_segment_name}</h3>\n{transcript_output}\n</div>"
 
     return subject_title, summerized_ticket_content
+
+
+def extract_content_text(body: dict) -> dict:
+    """
+    Extracts the content text from the given body.
+    The main goal is handling the JSON block in the content text.
+
+    Args:
+        - body (dict): A dictionary containing the content text.
+
+    Returns:
+        - content_text (dict): The content text dictionary.
+    """
+
+    content: str = body["content"][0]   # body["content"] is a list
+    
+    JSON_BLOCK_START    : str = "```json"
+    BLOCK_START         : str = "```"
+    BLOCK_END           : str = "```"
+    JSON_BLOCK_START_LEN: int = len(JSON_BLOCK_START)
+    BLOCK_START_LEN     : int = len(BLOCK_START)
+    BLOCK_END_LEN       : int = len(BLOCK_END)
+
+    if content["text"].startswith(JSON_BLOCK_START) and content["text"].endswith(BLOCK_END):
+        content["text"] = content["text"][JSON_BLOCK_START_LEN: -BLOCK_END_LEN].strip()
+    elif content["text"].startswith(BLOCK_START) and content["text"].endswith(BLOCK_END):
+        content["text"] = content["text"][BLOCK_START_LEN: -BLOCK_END_LEN].strip()
+    else:
+        pass    # Do nothing
+
+    content_text: dict = json.loads(content["text"])
+
+    return content_text
