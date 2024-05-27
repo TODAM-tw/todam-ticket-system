@@ -4,11 +4,11 @@ def extract_chat_history(
     Extract chat history from the content of segment
 
     Args:
-        - segment_contents: the content of the segment
+        - segment_contents (list of dict): The list of segment contents
 
     Returns:
-        - chat_history: the chat history of the segment
-        - message_types: the types of the messages
+        - chat_history (list of tuple(str, str): the chat history of the segment
+        - message_types (str): the types of the messages
     """
 
     chat_history = []
@@ -45,3 +45,22 @@ def clean_recording_markers(messages: list[dict]) -> list[dict]:
         messages.pop(LAST_INDEX)
 
     return messages
+
+
+def convert_message_types_to_list(
+        message_types: str) -> list:
+    """
+    Convert the message types string to a list of message types
+
+    Args:
+        - message_types (str): The message types string
+
+    Returns:
+        - message_types_list (list): The list of message types
+    """
+    cleaned_message_types = message_types.strip("[]").strip()
+    
+    message_types_list = cleaned_message_types.split(", ")
+    message_types_list = [message_type.strip("'") for message_type in message_types_list]
+
+    return message_types_list

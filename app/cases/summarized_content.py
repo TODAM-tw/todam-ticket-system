@@ -5,6 +5,7 @@ import gradio as gr
 import requests
 from requests.models import Response
 
+from app.utils.recording_contents import convert_message_types_to_list
 from app.utils.update import render_segment_id
 
 
@@ -102,17 +103,3 @@ def get_summarized_ticket_content(
     summerized_ticket_content = f"<div>\n<h3>Case Name: {log_segment_name}</h3>\n{transcript_output}\n</div>"
     
     return subject_output, summerized_ticket_content
-
-
-def convert_message_types_to_list(
-        message_types: str) -> list:
-    # Remove surrounding brackets and any extra whitespace
-    cleaned_message_types = message_types.strip("[]").strip()
-
-    # Split the string into a list using comma and space as delimiters
-    message_types_list = cleaned_message_types.split(", ")
-
-    # Remove quotes around each element in the list
-    message_types_list = [message_type.strip("'") for message_type in message_types_list]
-
-    return message_types_list
