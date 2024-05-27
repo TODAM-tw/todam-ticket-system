@@ -6,7 +6,7 @@ from app.cases.chat_history import get_row_chat_history
 from app.cases.segment import get_segment_names
 from app.cases.submit import send_summarized_ticket_content
 from app.cases.summarized_content import get_summarized_ticket_content
-
+from app.utils.update import render_preview
 
 def build_playground(
     *args: Any, **kwargs: Any,) -> gr.Blocks:
@@ -52,17 +52,17 @@ def build_playground(
                         interactive=True,
                         label="📝 Summarized Ticket Content (shift + enter)",
                         render=True,
-                        value="""<h1> ⚠️ Please click on the "🔄 Refresh Log Segments Records" button to get the latest log segment records. </h1>""",
+                        value="""<blockquote>⚠️ Please click on the "🔄 Refresh Log Segments Records" button to get the latest log segment records.</blockquote>""",
                     )
 
                     with gr.Row():
                         with gr.Column():
                             prev_summarized_ticket_subject = gr.HTML(
-                                value="""Subject: """,
+                                value="""<h1>Subject: </h1>""",
                             )
                         with gr.Column():
                             prev_summarized_ticket_content = gr.HTML(
-                                # value="""Content""",
+                                value="""<blockquote>⚠️ Please click on the "🔄 Refresh Log Segments Records" button to get the latest log segment records.</blockquote>""",
                             )
 
                 with gr.Row():
@@ -137,7 +137,3 @@ def build_playground(
         )
 
     return demo
-
-def render_preview(summarized_ticket_conent: str) -> str:
-    prev_summarized_ticket_content = summarized_ticket_conent
-    return prev_summarized_ticket_content
