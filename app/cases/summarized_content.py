@@ -32,9 +32,9 @@ def get_summarized_ticket_content(
             # Skip recording messages
             continue
         result.append({
-            "message_type": message_type, # "text" or "image
-            "user_type": current_user_type,
-            "content": content
+            "message_type": message_type,
+            "user_type"   : current_user_type,
+            "content"     : content
         })
 
     headers = {
@@ -84,7 +84,7 @@ def get_summarized_ticket_content(
 
 
     subject_output = f"<h1>Subject: {subject}</h1>"
-    summerized_ticket_content = f"<div>\n<h3>Case ID: {case_id}</h3>\n{transcript_output}\n</div>"
+    summerized_ticket_content = f"<div>\n<h3>Case Name: {log_segment_name}</h3>\n{transcript_output}\n</div>"
     
     return subject_output, summerized_ticket_content
 
