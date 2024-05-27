@@ -3,7 +3,8 @@ import os
 
 import requests
 
-from app.utils.data_type import extract_chat_history
+from app.utils.recording_contents import (clean_recording_markers,
+                                          extract_chat_history)
 from app.utils.update import render_segment_id
 
 # TODO:
@@ -37,18 +38,9 @@ def get_row_chat_history(
     if response.status_code == 200:
         data = json.loads(response.text)
 
-    # TODO: Refactor this part with the index of the messages
-    #       because the current index is not clear
-    #       to understand why we need to pop the first and last messages
-    # Check if the first and last messages are 'start recording' and 'end recording' respectively
-    if data["messages"] and data["messages"][0]["content"] == 'start recording':
-        data["messages"].pop(0)
+    mesages: list[dict] = data["messages"]
+    segment_contents = clean_recording_markers(mesages)
 
-    if data["messages"] and data["messages"][-1]["content"] == 'end recording':
-        data["messages"].pop()
-
-
-    segment_contents: list[dict] = data["messages"]
     row_chat_history, message_types = extract_chat_history(segment_contents)
 
     return row_chat_history, message_types
