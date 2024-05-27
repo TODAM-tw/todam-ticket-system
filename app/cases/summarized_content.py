@@ -5,14 +5,26 @@ import gradio as gr
 import requests
 from requests.models import Response
 
-from app.utils.update import render_segment_id
+from app.utils.recording_contents import convert_message_types_to_list
 
 
 def get_summarized_ticket_content(
         log_segment_name: str, id_name_comparison: str, 
         row_chat_history: gr.Chatbot, message_types: str) -> tuple[str, str]:
+    """
+    Get the summarized ticket content from the Bedrock API.
 
-    log_segment_id = render_segment_id(log_segment_name, id_name_comparison)
+    Args:
+        - log_segment_name (str): The name of the log segment.
+        - id_name_comparison (str): The comparison between the ID and name.
+        - row_chat_history (gr.Chatbot): The chat history.
+        - message_types (str): The message types.
+
+    Returns:
+        - subject_output (str): The subject of the ticket.
+        - summerized_ticket_content (str): The summarized ticket content.
+    """
+
     message_types_list = convert_message_types_to_list(message_types)
     bedrock_api_url: str = os.environ.get('BEDROCK_API_URL')
     
@@ -32,16 +44,16 @@ def get_summarized_ticket_content(
             # Skip recording messages
             continue
         result.append({
-            "message_type": message_type, # "text" or "image
-            "user_type": current_user_type,
-            "content": content
+            "message_type": message_type,
+            "user_type"   : current_user_type,
+            "content"     : content
         })
 
     headers = {
         'Content-Type': 'application/json'
     }
 
-    payload = json.dumps({"input": result})     # 要再包一層 input
+    payload: str = json.dumps({"input": result})     # 要再包一層 input
 
     response: Response = requests.request(
         "POST", bedrock_api_url, 
@@ -65,39 +77,26 @@ def get_summarized_ticket_content(
     else :
         return """Error: the output of data["body"] is not a list or dict"""
 
-    content = body["content"]   # list
+    usage: dict[int, int] = body["usage"]
+    input_tokens: int = usage["input_tokens"]
+    output_tokens: int = usage["output_tokens"]
+
+    content: list = body["content"]
     content = content[0]
 
-    content_text = content["text"]  # str
+    content_text: str = content["text"]
 
-    content_text_dict: dict = json.loads(content_text)   # dict
+    content_text_dict: dict = json.loads(content_text)
     
     subject: str = content_text_dict["subject"]
-    content_transcripts: list = content_text_dict["transcript"]    # list
-
-    case_id = log_segment_id
+    content_transcripts: list = content_text_dict["transcript"]
 
     transcript_output = ""
 
     for i in range(len(content_transcripts)):
         transcript_output += f"<blockquote><h3>Submitted by {content_transcripts[i]['submittedBy']}</h3>{content_transcripts[i]['content']}</blockquote>\n"
 
-
     subject_output = f"<h1>Subject: {subject}</h1>"
-    summerized_ticket_content = f"<div>\n<h3>Case ID: {case_id}</h3>\n{transcript_output}\n</div>"
+    summerized_ticket_content = f"<div>\n<h3>Case Name: {log_segment_name}</h3>\n{transcript_output}\n</div>"
     
     return subject_output, summerized_ticket_content
-
-
-def convert_message_types_to_list(
-        message_types: str) -> list:
-    # Remove surrounding brackets and any extra whitespace
-    cleaned_message_types = message_types.strip("[]").strip()
-
-    # Split the string into a list using comma and space as delimiters
-    message_types_list = cleaned_message_types.split(", ")
-
-    # Remove quotes around each element in the list
-    message_types_list = [message_type.strip("'") for message_type in message_types_list]
-
-    return message_types_list
