@@ -20,3 +20,8 @@ def render_segment_id(
         if time_range == log_segment_name:
             return id
     return None
+
+
+def render_preview(summarized_ticket_conent: str) -> str:
+    prev_summarized_ticket_content = summarized_ticket_conent
+    return prev_summarized_ticket_content

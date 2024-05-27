@@ -9,10 +9,11 @@ from app.utils.recording_contents import convert_message_types_to_list
 
 
 def get_summarized_ticket_content(
-        log_segment_name: str, id_name_comparison: str, 
-        row_chat_history: gr.Chatbot, message_types: str) -> tuple[str, str]:
+        log_segment_name: str, row_chat_history: gr.Chatbot, 
+        message_types: str) -> tuple[str, str, str, str]:
     """
     Get the summarized ticket content from the Bedrock API.
+    Also calculate the token usage and cost.
 
     Args:
         - log_segment_name (str): The name of the log segment.
@@ -23,7 +24,12 @@ def get_summarized_ticket_content(
     Returns:
         - subject_output (str): The subject of the ticket.
         - summerized_ticket_content (str): The summarized ticket content.
+        - token_usage (str): The token usage.
+        - token_cost (str): The token cost.
     """
+
+    COST_PER_INPUT_TOKEN : float =  3.00 / 1_000_000
+    COST_PER_OUTPUT_TOKEN: float = 15.00 / 1_000_000
 
     message_types_list = convert_message_types_to_list(message_types)
     bedrock_api_url: str = os.environ.get('BEDROCK_API_URL')
@@ -41,8 +47,7 @@ def get_summarized_ticket_content(
             current_user_type = "Client"
             content = client_message
         else:
-            # Skip recording messages
-            continue
+            continue    # Skip recording messages
         result.append({
             "message_type": message_type,
             "user_type"   : current_user_type,
@@ -78,8 +83,13 @@ def get_summarized_ticket_content(
         return """Error: the output of data["body"] is not a list or dict"""
 
     usage: dict[int, int] = body["usage"]
-    input_tokens: int = usage["input_tokens"]
-    output_tokens: int = usage["output_tokens"]
+    input_token : int = usage["input_tokens"]
+    output_token: int = usage["output_tokens"]
+
+    total_token: int = input_token + output_token
+    total_cost: float = input_token * COST_PER_INPUT_TOKEN + output_token * COST_PER_OUTPUT_TOKEN
+    token_usage = f"🔒 Token Usage: {total_token} (input: {input_token}; output: {output_token})"
+    token_cost = f"💰 Token Cost: {total_cost:.2f} (USD)"
 
     content: list = body["content"]
     content = content[0]
@@ -99,4 +109,4 @@ def get_summarized_ticket_content(
     subject_output = f"<h1>Subject: {subject}</h1>"
     summerized_ticket_content = f"<div>\n<h3>Case Name: {log_segment_name}</h3>\n{transcript_output}\n</div>"
     
-    return subject_output, summerized_ticket_content
+    return subject_output, summerized_ticket_content, token_usage, token_cost

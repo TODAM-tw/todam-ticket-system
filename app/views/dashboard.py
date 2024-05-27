@@ -1,4 +1,3 @@
-import json
 from typing import Any
 
 import gradio as gr
@@ -7,7 +6,7 @@ from app.cases.chat_history import get_row_chat_history
 from app.cases.segment import get_segment_names
 from app.cases.submit import send_summarized_ticket_content
 from app.cases.summarized_content import get_summarized_ticket_content
-
+from app.utils.update import render_preview
 
 def build_playground(
     *args: Any, **kwargs: Any,) -> gr.Blocks:
@@ -53,17 +52,17 @@ def build_playground(
                         interactive=True,
                         label="📝 Summarized Ticket Content (shift + enter)",
                         render=True,
-                        value="""<h1> ⚠️ Please click on the "🔄 Refresh Log Segments Records" button to get the latest log segment records. </h1>""",
+                        value="""<blockquote>⚠️ Please click on the "🔄 Refresh Log Segments Records" button to get the latest log segment records.</blockquote>""",
                     )
 
                     with gr.Row():
                         with gr.Column():
                             prev_summarized_ticket_subject = gr.HTML(
-                                value="""Subject: """,
+                                value="""<h1>Subject: </h1>""",
                             )
                         with gr.Column():
                             prev_summarized_ticket_content = gr.HTML(
-                                # value="""Content""",
+                                value="""<blockquote>⚠️ Please click on the "🔄 Refresh Log Segments Records" button to get the latest log segment records.</blockquote>""",
                             )
 
                 with gr.Row():
@@ -75,11 +74,6 @@ def build_playground(
                         variant="primary",
                         value="🕹️ Submit to Ticket System",
                     )
-
-        submit_status = gr.Markdown(
-            value="🚦 Submit Status: Pending",
-            line_breaks=True,
-        )
 
         message_type = gr.Markdown(
             value="🧪 Test Type: Playground",
@@ -94,14 +88,16 @@ def build_playground(
 
         with gr.Row():
             token_cost = gr.Markdown(
-                "🔒 Token Cost $: 0.01 USD"
+                "💰 Token Cost:"
             )
 
-            time_cost = gr.Markdown(
-                "⏰ Time Cost: 40 (sec)"
+            token_usage = gr.Markdown(
+                "🔒 Token Usage:"
             )
-            step_cost = gr.Markdown(
-                "🦶🏻 Steps Cost: 5 steps"
+
+            submit_status = gr.Markdown(
+                value="🚦 Submit Status: Pending",
+                line_breaks=True,
             )
 
         refresh_btn.click(
@@ -110,8 +106,6 @@ def build_playground(
             outputs=[log_segment_name, id_name_comparison],
         )
         
-
-
         log_segment_name.change(
             fn=get_row_chat_history,
             inputs=[log_segment_name, id_name_comparison],
@@ -126,14 +120,14 @@ def build_playground(
 
         row_chat_history.change(
             fn=get_summarized_ticket_content,
-            inputs=[log_segment_name, id_name_comparison, row_chat_history, message_type],
-            outputs=[prev_summarized_ticket_subject, summarized_ticket_conent],
+            inputs=[log_segment_name, row_chat_history, message_type],
+            outputs=[prev_summarized_ticket_subject, summarized_ticket_conent, token_usage, token_cost],
         )
 
         regenerate_summarized_ticket_content_btn.click(
             fn=get_summarized_ticket_content,
-            inputs=[log_segment_name, id_name_comparison, row_chat_history, message_type],
-            outputs=[prev_summarized_ticket_subject, summarized_ticket_conent],
+            inputs=[log_segment_name, row_chat_history, message_type],
+            outputs=[prev_summarized_ticket_subject, summarized_ticket_conent, token_usage, token_cost],
         )
 
         submit_summarized_btn.click(
@@ -143,7 +137,3 @@ def build_playground(
         )
 
     return demo
-
-def render_preview(summarized_ticket_conent: str) -> str:
-    prev_summarized_ticket_content = summarized_ticket_conent
-    return prev_summarized_ticket_content
