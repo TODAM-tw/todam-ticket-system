@@ -94,14 +94,11 @@ def build_playground(
 
         with gr.Row():
             token_cost = gr.Markdown(
-                "🔒 Token Cost $: 0.01 USD"
+                "💰 Token Cost:"
             )
 
-            time_cost = gr.Markdown(
-                "⏰ Time Cost: 40 (sec)"
-            )
-            step_cost = gr.Markdown(
-                "🦶🏻 Steps Cost: 5 steps"
+            token_usage = gr.Markdown(
+                "🔒 Token Usage:"
             )
 
         refresh_btn.click(
@@ -126,14 +123,14 @@ def build_playground(
 
         row_chat_history.change(
             fn=get_summarized_ticket_content,
-            inputs=[log_segment_name, id_name_comparison, row_chat_history, message_type],
-            outputs=[prev_summarized_ticket_subject, summarized_ticket_conent],
+            inputs=[log_segment_name, row_chat_history, message_type],
+            outputs=[prev_summarized_ticket_subject, summarized_ticket_conent, token_usage, token_cost],
         )
 
         regenerate_summarized_ticket_content_btn.click(
             fn=get_summarized_ticket_content,
-            inputs=[log_segment_name, id_name_comparison, row_chat_history, message_type],
-            outputs=[prev_summarized_ticket_subject, summarized_ticket_conent],
+            inputs=[log_segment_name, row_chat_history, message_type],
+            outputs=[prev_summarized_ticket_subject, summarized_ticket_conent, token_usage, token_cost],
         )
 
         submit_summarized_btn.click(
