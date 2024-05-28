@@ -37,16 +37,6 @@ def build_playground(
                     show_label=True,
                 )
             with gr.Column(scale=2):
-                # TODO: sync with the chat history
-                # with gr.Row():
-                #     summarized_Subject = gr.Markdown(
-                #         value="# Summarized Subject",
-                #         line_breaks=True,
-                #     )
-                #     date = gr.Markdown(
-                #         value="📅 Date",
-                #         line_breaks=True,
-                #     )
                 with gr.Row():
                     summarized_ticket_conent = gr.Textbox(
                         interactive=True,
