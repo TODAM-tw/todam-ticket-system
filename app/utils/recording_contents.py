@@ -35,14 +35,14 @@ def clean_recording_markers(messages: list[dict]) -> list[dict]:
     Returns:
         - message (list of dict): The cleaned list of messages.
     """
-    FIRST_INDEX = 0
-    LAST_INDEX = -1
+    START_RECORDING_INDEX = 0
+    END_RECORDING_INDEX = -1
 
-    if messages and messages[FIRST_INDEX].get("content") == 'start recording':
-        messages.pop(FIRST_INDEX)
+    if messages and messages[START_RECORDING_INDEX].get("content") == 'start recording':
+        messages.pop(START_RECORDING_INDEX)
 
-    if messages and messages[LAST_INDEX].get("content") == 'end recording':
-        messages.pop(LAST_INDEX)
+    if messages and messages[END_RECORDING_INDEX].get("content") == 'end recording':
+        messages.pop(END_RECORDING_INDEX)
 
     return messages
 

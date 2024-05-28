@@ -21,25 +21,30 @@ def get_segment_names(
         - segment_id_name_map_str: The map of segment_id to segment_name in JSON string
     """
 
-    list_log_segment_api_url : str = os.environ.get('LIST_LOG_SEGMENT_API_URL')
+    list_log_segment_api_url: str = os.environ.get('LIST_LOG_SEGMENT_API_URL')
 
-    headers = {
+    headers: dict = {
     }
-    payload = {
+    payload: dict = {
     }
 
-    response = requests.request(
-        method="GET", url=list_log_segment_api_url, headers=headers, data=payload
+    response: requests.Response = requests.request(
+        method="GET", url=list_log_segment_api_url, 
+        headers=headers, data=payload
     )
     if response.status_code == 200:
         data = json.loads(response.text)
 
-    segment_ids = [segment["segment_id"] for segment in data["segments"]]
     segment_names = [segment["segment_name"] for segment in data["segments"]]
+    # TODO: Handle the enrolled group ids to display the group name
     group_ids = [segment["group_id"] for segment in data["segments"]]
 
-    segment_id_name_map = {segment["segment_id"]: segment["segment_name"] for segment in data["segments"]}
-    segment_id_name_map_str = json.dumps(segment_id_name_map, ensure_ascii=False, indent=4)
+    segment_id_name_map = {
+        segment["segment_id"]: segment["segment_name"] for segment in data["segments"]
+    }
+    segment_id_name_map_str = json.dumps(
+        segment_id_name_map, ensure_ascii=False, indent=4
+    )
 
     log_segment_name = gr.Dropdown(
         label="🚘 Log Segment Records (Name)",

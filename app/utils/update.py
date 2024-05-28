@@ -25,3 +25,7 @@ def render_segment_id(
 def render_preview(summarized_ticket_conent: str) -> str:
     prev_summarized_ticket_content = summarized_ticket_conent
     return prev_summarized_ticket_content
+
+
+def remove_subject_tag(subject):
+    return subject.replace("<h1>Subject: ", "").replace("</h1>", "")

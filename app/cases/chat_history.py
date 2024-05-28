@@ -29,17 +29,19 @@ def get_row_chat_history(
     list_chat_history_api_url: str = os.environ.get('LIST_CHAT_HISTORY_API_URL')
 
     url = f"{list_chat_history_api_url}/messages?segment_id={log_segment_id}"
-    headers = {}
-    payload = {}
-    data = {}
+    headers: dict = {}
+    payload: dict = {}
+    data: dict = {}
 
-    response = requests.request(
-        "GET", url, headers=headers, data=payload)
+    response: requests.Response = requests.request(
+        method="GET", url=url, 
+        headers=headers, data=payload
+    )
     if response.status_code == 200:
         data = json.loads(response.text)
 
     mesages: list[dict] = data["messages"]
-    segment_contents = clean_recording_markers(mesages)
+    segment_contents: list[dict] = clean_recording_markers(mesages)
 
     row_chat_history, message_types = extract_chat_history(segment_contents)
 
