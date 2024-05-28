@@ -10,7 +10,7 @@ from app.utils.summarized import (calculate_token_cost, extract_payload_inputs,
 
 def get_summarized_ticket_content(
         log_segment_name: str, row_chat_history: tuple[str, str], 
-        message_types: str) -> tuple[str, str, str, str]:
+        message_types: str) -> tuple[str, str, str, str, str]:
     """
     Get the summarized ticket content from the Bedrock API.
     Also calculate the token usage and cost.
@@ -22,7 +22,8 @@ def get_summarized_ticket_content(
         - message_types (str): The message types.
 
     Returns:
-        - subject_title (str): The subject of the ticket.
+        - preview_subject_title (str): The subject of the ticket.
+        - preview_summerized_ticket_content (str): The previewiew summarized ticket content.
         - summerized_ticket_content (str): The summarized ticket content.
         - token_usage (str): The token usage.
         - token_cost (str): The token cost.
@@ -67,11 +68,13 @@ def get_summarized_ticket_content(
 
     content_text = extract_content_text(body)
 
-    subject_title, summerized_ticket_content = format_summarized_transcripts(
+    preview_subject_title, summerized_ticket_content = format_summarized_transcripts(
         log_segment_name, content_text
     )
     token_usage, token_cost = calculate_token_cost(
         body, COST_PER_INPUT_TOKEN, COST_PER_OUTPUT_TOKEN
     )
+    preview_summerized_ticket_content = summerized_ticket_content
     
-    return subject_title, summerized_ticket_content, token_usage, token_cost
+    return (preview_subject_title, preview_summerized_ticket_content, 
+            summerized_ticket_content, token_usage, token_cost)
