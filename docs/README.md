@@ -30,6 +30,8 @@ The frontend with gradio and combined with the API endpoints for the ticket syst
     - [Example Response](#example-response)
     - [Method to process the Response](#method-to-process-the-response)
   - [Chat History Component](#chat-history-component)
+- [CONTACT INFO.](#contact-info)
+- [License](#license)
 
 ## Developing Requirements
 
@@ -559,6 +561,25 @@ for item in result['transcript']:
     ]
 }
 ```
+
+## CONTACT INFO.
+
+> Cloud Engineer Intern </br>
+> **Hugo ChunHo Lin**
+> 
+> <aside>
+>   📩 E-mail: <a href="mailto:hugo970217@gmail.com">hugo970217@gmail.com</a>
+> <br>
+>   📩 ECV E-mail: <a href="mailto:hugo.lin@ecloudvalley.com">hugo970217@gmail.com</a>
+> <br>
+>   🧳 Linkedin: <a href="https://www.linkedin.com/in/1chooo/">Hugo ChunHo Lin</a>
+> <br>
+>   👨🏻‍💻 GitHub: <a href="https://github.com/1chooo">1chooo</a>
+>    
+> </aside>
+
+## License
+Released under [Apache License](../LICENSE) by [TODAM-tw](https://github.com/TODAM-tw).
 
 
 [^1]: [Serverless Machine Learning Applications with Hugging Face Gradio and AWS Lambda](https://www.philschmid.de/serverless-gradio)
