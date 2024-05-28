@@ -14,7 +14,6 @@ The frontend with gradio and combined with the API endpoints for the ticket syst
 - [Project Structure](#project-structure)
   - [`app/`](#app)
     - [`app/cases/`](#appcases)
-    - [`app/controllers/`](#appcontrollers)
     - [`app/infra/`](#appinfra)
     - [`app/views/`](#appviews)
   - [`docs/`](#docs)
@@ -137,8 +136,16 @@ todam-ticket-system/
 ├── app/
 ├── docs/
 ├── scripts/
+├── .dockerignore
 ├── .env
-├── docker-compose.yml
+├── .env.dev
+├── .env.example
+├── .env.prod
+├── .env.test
+├── .gitignore
+├── app.py
+├── cdk.json
+├── cdk.py
 ├── Dockerfile
 ├── LICENSE
 ├── poetry.lock
@@ -152,8 +159,8 @@ todam-ticket-system/
 ```shell
 ├── app/
 │   ├── cases/
-│   ├── controllers/
 │   ├── infra/
+│   ├── utils/
 │   ├── views/
 │   ├── __init__.py
 │   └── main.py
@@ -171,14 +178,6 @@ todam-ticket-system/
 │   │   └── ticket_summarized.py
 ```
 
-#### `app/controllers/`
-
-```shell
-├── app/
-│   ├── controllers/
-│   │   ├── __init__.py
-│   │   └── mock_ticket.py
-```
 
 #### `app/infra/`
 
@@ -230,13 +229,19 @@ import gradio as gr
 from fastapi import FastAPI
 
 from app.views.dashboard import build_playground
-from app.controllers.mock_ticket import mock_ticket_routes
 
 
 def setup_routers(app: FastAPI) -> None:
+    """
+    Setup routers for the application
+
+    Args:
+        - app (FastAPI): FastAPI instance
+
+    Returns:
+        - None
+    """
     gr.mount_gradio_app(app, build_playground(), path="/playground")
-    
-    app.include_router(mock_ticket_routes)
 ```
 
 ### Elements for the gradio app.
