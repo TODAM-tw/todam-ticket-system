@@ -58,6 +58,7 @@ CDK_DEFAULT_REGION="YOUR_AWS_CDK_DEFAULT_REGION"
 ```
 
 Run the web app with the following command.
+
 ```shell
 # run the web app in development mode
 $ python app.py --port 8080 --dev
@@ -69,6 +70,17 @@ $ python app.py --port 8080 --prod
 # Also you can customize the port number
 $ python app.py --port 8081 --dev
 ```
+
+> [!NOTE]
+> If you want to run the app with the `uvicorn` server, so that you can design your own API and **reload** the app, you can run the following command.
+> ```shell
+> $ ./scripts/run.sh
+> 
+> # or
+> $ uvicorn app.main:app --host 0.0.0.0 --port 8080 --reload
+> ```
+>
+> This will use the `.env` as the default configuration file.
 
 ## Deployment
 
