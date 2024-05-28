@@ -33,17 +33,18 @@ def get_summarized_ticket_content(
 
     bedrock_api_url: str = os.environ.get('BEDROCK_API_URL')
 
-    headers = {
+    headers: dict = {
         'Content-Type': 'application/json'
     }
 
-    payload_inputs = extract_payload_inputs(
+    payload_inputs: list[dict] = extract_payload_inputs(
         row_chat_history, message_types
     )
     payload: str = json.dumps({"input": payload_inputs})     # 要再包一層 input
 
     response: Response = requests.request(
-        "POST", bedrock_api_url, 
+        method="POST", 
+        url=bedrock_api_url, 
         headers=headers,
         data=payload,
     )
