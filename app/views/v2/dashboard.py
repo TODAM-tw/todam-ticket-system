@@ -29,11 +29,11 @@ def build_playground(
                     variant="secondary",
                     value="🔄 Refresh Log Segments Records",
                 )
+
                 row_chat_history = gr.Chatbot(
                     label="Chat History Row Data",
                     show_label=True,
                 )
-
             with gr.Column(scale=2):
                 with gr.Row():
                     summarized_ticket_conent = gr.Textbox(
@@ -43,25 +43,25 @@ def build_playground(
                         value="""<blockquote>⚠️ Please click on the "🔄 Refresh Log Segments Records" button to get the latest log segment records.</blockquote>""",
                     )
 
-                    with gr.Row():
-                        with gr.Column():
-                            preview_summarized_ticket_subject = gr.HTML(
-                                value="""<h1>Subject: </h1>""",
-                            )
-                        with gr.Column():
-                            preview_summarized_ticket_content = gr.HTML(
-                                value="""<blockquote>⚠️ Please click on the "🔄 Refresh Log Segments Records" button to get the latest log segment records.</blockquote>""",
-                            )
+                with gr.Column(scale=1):
+                    preview_summarized_ticket_subject = gr.HTML(
+                        value="""<h1>Subject: </h1>""",
+                    )
+        # with gr.Row():
+        #     with gr.Column():
+        preview_summarized_ticket_content = gr.HTML(
+            value="""<blockquote>⚠️ Please click on the "🔄 Refresh Log Segments Records" button to get the latest log segment records.</blockquote>""",
+        )
 
-                with gr.Row():
-                    regenerate_summarized_ticket_content_btn = gr.Button(
-                        variant="secondary",
-                        value="🔄 re-generate",
-                    )
-                    submit_summarized_btn = gr.Button(
-                        variant="primary",
-                        value="🕹️ Submit to Ticket System",
-                    )
+        with gr.Row():
+            regenerate_summarized_ticket_content_btn = gr.Button(
+                variant="secondary",
+                value="🔄 re-generate",
+            )
+            submit_summarized_btn = gr.Button(
+                variant="primary",
+                value="🕹️ Submit to Ticket System",
+            )
 
         message_type = gr.Markdown(
             value="🧪 Test Type: Playground",

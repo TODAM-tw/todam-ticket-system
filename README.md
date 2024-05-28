@@ -58,6 +58,7 @@ CDK_DEFAULT_REGION="YOUR_AWS_CDK_DEFAULT_REGION"
 ```
 
 Run the web app with the following command.
+
 ```shell
 # run the web app in development mode
 $ python app.py --port 8080 --dev
@@ -69,6 +70,17 @@ $ python app.py --port 8080 --prod
 # Also you can customize the port number
 $ python app.py --port 8081 --dev
 ```
+
+> [!NOTE]
+> If you want to run the app with the `uvicorn` server, so that you can design your own API and **reload** the app, you can run the following command.
+> ```shell
+> $ ./scripts/run.sh
+> 
+> # or
+> $ uvicorn app.main:app --host 0.0.0.0 --port 8080 --reload
+> ```
+>
+> This will use the `.env` as the default configuration file.
 
 ## Deployment
 
@@ -89,3 +101,23 @@ $ docker run -p 8080:8080 todam-ticket-system:<TAG_NAME>
 $ cdk bootstrap
 $ cdk deploy
 ```
+
+## CONTACT INFO.
+
+> Cloud Engineer Intern </br>
+> **Hugo ChunHo Lin**
+> 
+> <aside>
+>   📩 E-mail: <a href="mailto:hugo970217@gmail.com">hugo970217@gmail.com</a>
+> <br>
+>   📩 ECV E-mail: <a href="mailto:hugo.lin@ecloudvalley.com">hugo970217@gmail.com</a>
+> <br>
+>   🧳 Linkedin: <a href="https://www.linkedin.com/in/1chooo/">Hugo ChunHo Lin</a>
+> <br>
+>   👨🏻‍💻 GitHub: <a href="https://github.com/1chooo">1chooo</a>
+>    
+> </aside>
+
+## License
+Released under [Apache License](./LICENSE) by [TODAM-tw](https://github.com/TODAM-tw).
+
