@@ -1,6 +1,7 @@
 import json
 import os
 
+import gradio as gr
 import requests
 from requests.models import Response
 
@@ -29,6 +30,8 @@ def get_summarized_ticket_content(
         - token_cost (str): The token cost.
     """
 
+    gr.Info("""Please wait for the model to finish summarizing before operating on the screen! 🙏🏻""")
+
     COST_PER_INPUT_TOKEN : float =  3.00 / 1_000_000
     COST_PER_OUTPUT_TOKEN: float = 15.00 / 1_000_000
 
@@ -54,8 +57,15 @@ def get_summarized_ticket_content(
 
     if response.status_code == 200:
         data: dict = json.loads(response.text)
+    elif response.status_code == 400:
+        advice = json.loads(response.text)["advice"]
+        raise gr.Error(f"Error: {advice}")
+    elif response.status_code == 500:
+        advice = json.loads(response.text)["advice"]
+        raise gr.Error(f"Error: {advice}")
     else:
-        return "Error: Something went wrong with the API"
+        advice = json.loads(response.text)["advice"]
+        raise gr.Error(f"Error: {advice}")
 
     body = json.loads(data["body"])
 

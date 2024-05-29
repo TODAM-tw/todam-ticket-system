@@ -110,7 +110,7 @@ $ cdk deploy
 > <aside>
 >   📩 E-mail: <a href="mailto:hugo970217@gmail.com">hugo970217@gmail.com</a>
 > <br>
->   📩 ECV E-mail: <a href="mailto:hugo.lin@ecloudvalley.com">hugo970217@gmail.com</a>
+>   📩 ECV E-mail: <a href="mailto:hugo.lin@ecloudvalley.com">hugo.lin@ecloudvalley.com</a>
 > <br>
 >   🧳 Linkedin: <a href="https://www.linkedin.com/in/1chooo/">Hugo ChunHo Lin</a>
 > <br>

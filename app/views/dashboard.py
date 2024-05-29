@@ -2,26 +2,35 @@ from typing import Any
 
 import gradio as gr
 
-from app.cases.chat_history import get_row_chat_history
-from app.cases.segment import get_segment_names
-from app.cases.submit import send_summarized_ticket_content
-from app.cases.ticket_summarized import get_summarized_ticket_content
-from app.utils.update import render_preview
+from app.utils.listener import background_listener
+from app.views.components.converted import get_hidden_info_converted
+from app.views.components.information import title
+from app.views.components.status_bar import get_status_bar
+
 
 def build_playground(
     *args: Any, **kwargs: Any,) -> gr.Blocks:
+    """
+    Build the playground with gradio components.
 
-    with gr.Blocks(
-        title='ToDAM Ticket System',
-    ) as demo:
-        gr.HTML("<h1 align=center>ToDAM Ticket System</h1>")
+    Args:
+        - *args (Any): The args
+        - **kwargs (Any): The kwargs
+    
+    Returns:
+        - demo (gr.Blocks): The gradio blocks
+    """
+
+    with gr.Blocks(title=f"{title}") as demo:
+
+        gr.HTML(f"<h1 align=center>{title}</h1>")
 
         with gr.Row():
 
             with gr.Column(scale=1):
                 log_segment_name = gr.Dropdown(
                     label="🚘 Log Segment Records (Name)",
-                    info="Select a Record Segment to summerize with 👇🏻",
+                    info="Select a Recorded Segment to summerize with 👇🏻",
                     interactive=True,
                     multiselect=None,
                 )
@@ -40,7 +49,7 @@ def build_playground(
                         interactive=True,
                         label="📝 Summarized Ticket Content (shift + enter)",
                         render=True,
-                        value="""<blockquote>⚠️ Please click on the "🔄 Refresh Log Segments Records" button to get the latest log segment records.</blockquote>""",
+                        value="""<blockquote>Please click on the "🔄 Refresh Log Segments Records" button to get the latest log segment records.</blockquote>""",
                     )
 
                     with gr.Row():
@@ -50,7 +59,7 @@ def build_playground(
                             )
                         with gr.Column():
                             preview_summarized_ticket_content = gr.HTML(
-                                value="""<blockquote>⚠️ Please click on the "🔄 Refresh Log Segments Records" button to get the latest log segment records.</blockquote>""",
+                                value="""<blockquote>Please click on the "🔄 Refresh Log Segments Records" button to get the latest log segment records.</blockquote>""",
                             )
 
                 with gr.Row():
@@ -63,74 +72,20 @@ def build_playground(
                         value="🕹️ Submit to Ticket System",
                     )
 
-        message_type = gr.Markdown(
-            value="🧪 Test Type: Playground",
-            visible=False,
-        )   
-
-        id_name_comparison = gr.Code(
-            value="",
-            language="json",
-            visible=False,
-        )
+        message_type, id_name_comparison = get_hidden_info_converted()
 
         with gr.Row():
-            token_cost = gr.Markdown(
-                "💰 Token Cost:"
-            )
+            token_cost, token_usage, submit_status = get_status_bar()
 
-            token_usage = gr.Markdown(
-                "🔒 Token Usage:"
-            )
-
-            submit_status = gr.Markdown(
-                value="🚦 Submit Status: Pending",
-                line_breaks=True,
-            )
-
-        refresh_btn.click(
-            fn=get_segment_names,
-            inputs=[log_segment_name],
-            outputs=[log_segment_name, id_name_comparison],
-        )
-        
-        log_segment_name.change(
-            fn=get_row_chat_history,
-            inputs=[log_segment_name, id_name_comparison],
-            outputs=[row_chat_history, message_type],
-        )
-
-        summarized_ticket_conent.change(
-            fn=render_preview,
-            inputs=summarized_ticket_conent,
-            outputs=preview_summarized_ticket_content,
-        )
-
-        row_chat_history.change(
-            fn=get_summarized_ticket_content,
-            inputs=[log_segment_name, row_chat_history, message_type],
-            outputs=[
-                preview_summarized_ticket_subject, preview_summarized_ticket_content, 
-                summarized_ticket_conent, token_usage, token_cost
-            ],
-        )
-
-        regenerate_summarized_ticket_content_btn.click(
-            fn=get_summarized_ticket_content,
-            inputs=[log_segment_name, row_chat_history, message_type],
-            outputs=[
-                preview_summarized_ticket_subject, preview_summarized_ticket_content, 
-                summarized_ticket_conent, token_usage, token_cost
-            ],
-        )
-
-        submit_summarized_btn.click(
-            fn=send_summarized_ticket_content,
-            inputs=[
-                preview_summarized_ticket_subject, summarized_ticket_conent, 
-                log_segment_name, id_name_comparison,
-            ],
-            outputs=submit_status,
+        background_listener(
+            refresh_btn, log_segment_name, 
+            id_name_comparison, row_chat_history, 
+            message_type, summarized_ticket_conent, 
+            preview_summarized_ticket_subject, 
+            preview_summarized_ticket_content, 
+            token_usage, token_cost, 
+            regenerate_summarized_ticket_content_btn, 
+            submit_summarized_btn, submit_status
         )
 
     return demo

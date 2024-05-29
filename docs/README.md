@@ -575,7 +575,7 @@ for item in result['transcript']:
 > <aside>
 >   📩 E-mail: <a href="mailto:hugo970217@gmail.com">hugo970217@gmail.com</a>
 > <br>
->   📩 ECV E-mail: <a href="mailto:hugo.lin@ecloudvalley.com">hugo970217@gmail.com</a>
+>   📩 ECV E-mail: <a href="mailto:hugo.lin@ecloudvalley.com">hugo.lin@ecloudvalley.com</a>
 > <br>
 >   🧳 Linkedin: <a href="https://www.linkedin.com/in/1chooo/">Hugo ChunHo Lin</a>
 > <br>
@@ -591,3 +591,30 @@ Released under [Apache License](../LICENSE) by [TODAM-tw](https://github.com/TOD
 [^2]: [philschmid/serverless-machine-learning/gradio-aws-lambda-transformers](https://github.com/philschmid/serverless-machine-learning/tree/main/gradio-aws-lambda-transformers)
 
 
+```python
+if response.status_code == 200:
+    data: dict = json.loads(response.text)
+elif response.status_code == 400:
+    response.text
+    return (
+        f"<h1>Error: {response.text}</h1>", 
+        "Maybe User input is empty or invalid.", 
+        "Maybe User input is empty or invalid.",
+        "💰 Token Cost: NULL", "🔒 Token Usage: NULL"
+    )
+elif response.status_code == 500:
+    response.text
+    return (
+        f"<h1>Error: {response.text}</h1>", 
+        "The number of placeholders does not match the number of URLs. or prompt_file not found or Ran out of URLs in the queue before replacing all placeholders. or others", 
+        "The number of placeholders does not match the number of URLs. or prompt_file not found or Ran out of URLs in the queue before replacing all placeholders. or others", 
+        "💰 Token Cost: NULL", "🔒 Token Usage: NULL"
+    )
+else:
+    return (
+        "<h1>Error: Something went wrong with the API</h1>", 
+        "We meet error when we call the API", 
+        "We meet error when we call the API", 
+        "💰 Token Cost: NULL", "🔒 Token Usage: NULL"
+    )
+```
