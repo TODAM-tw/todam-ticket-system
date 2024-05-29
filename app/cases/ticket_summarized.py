@@ -1,6 +1,7 @@
 import json
 import os
 
+import gradio as gr
 import requests
 from requests.models import Response
 
@@ -54,9 +55,13 @@ def get_summarized_ticket_content(
 
     if response.status_code == 200:
         data: dict = json.loads(response.text)
+    elif response.status_code == 400:
+        raise gr.Error(f"Error: {response.text}")
+    elif response.status_code == 500:
+        raise gr.Error(f"Error: {response.text}")
     else:
-        return "Error: Something went wrong with the API"
-
+        raise gr.Error(f"Error: {response.text}")
+    
     body = json.loads(data["body"])
 
     if type(body) == list:
