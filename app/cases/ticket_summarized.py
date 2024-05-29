@@ -58,11 +58,11 @@ def get_summarized_ticket_content(
     if response.status_code == 200:
         data: dict = json.loads(response.text)
     elif response.status_code == 400:
-        raise gr.Error(f"Error: {response.text}")
+        raise gr.Error(f"Error: {response.advice}")
     elif response.status_code == 500:
-        raise gr.Error(f"Error: {response.text}")
+        raise gr.Error(f"Error: {response.advice}")
     else:
-        raise gr.Error(f"Error: {response.text}")
+        raise gr.Error(f"Error: {response.advice}")
     
     body = json.loads(data["body"])
 
