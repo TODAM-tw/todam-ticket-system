@@ -1,5 +1,7 @@
 # ToDAM Ticket System
 
+<img align=center alt="TODAM Ticket System" src="./docs/imgs/cover.png">
+
 The frontend with gradio and combined with the API endpoints for the ticket system.
 
 ## Developing Requirements
