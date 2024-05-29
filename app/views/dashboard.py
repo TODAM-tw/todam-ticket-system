@@ -49,7 +49,7 @@ def build_playground(
                         interactive=True,
                         label="📝 Summarized Ticket Content (shift + enter)",
                         render=True,
-                        value="""<blockquote>⚠️ Please click on the "🔄 Refresh Log Segments Records" button to get the latest log segment records.</blockquote>""",
+                        value="""<blockquote>Please click on the "🔄 Refresh Log Segments Records" button to get the latest log segment records.</blockquote>""",
                     )
 
                     with gr.Row():
@@ -59,7 +59,7 @@ def build_playground(
                             )
                         with gr.Column():
                             preview_summarized_ticket_content = gr.HTML(
-                                value="""<blockquote>⚠️ Please click on the "🔄 Refresh Log Segments Records" button to get the latest log segment records.</blockquote>""",
+                                value="""<blockquote>Please click on the "🔄 Refresh Log Segments Records" button to get the latest log segment records.</blockquote>""",
                             )
 
                 with gr.Row():

@@ -1,5 +1,6 @@
 import os
 
+import gradio as gr
 import requests
 
 from app.utils.update import remove_subject_tag, render_segment_id
@@ -47,8 +48,8 @@ def send_summarized_ticket_content(
         if response.status_code == 200: 
             print(response.text)
 
-        submit_status = "🚦 Submit Status: Success"
+        gr.Info("""🚦 Submit Status: Success !!!""")
+        submit_status = "🚦 Submit Status: Success !!!"
         return submit_status
     except Exception as e:
-        submit_status = f"🚦 Submit Status: Failed, the error is {e}"
-        return submit_status
+        raise gr.Error(f"🚦 Submit Status: Failed, the error is {e}")

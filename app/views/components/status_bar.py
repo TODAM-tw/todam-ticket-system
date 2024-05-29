@@ -23,6 +23,7 @@ def get_status_bar() -> tuple[gr.Markdown, gr.Markdown, gr.Markdown]:
     submit_status = gr.Markdown(
         value="🚦 Submit Status: Pending",
         line_breaks=True,
+        visible=False,
     )
 
     return token_cost, token_usage, submit_status
