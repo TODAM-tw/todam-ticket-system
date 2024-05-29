@@ -20,6 +20,7 @@ def get_segment_names(
         - log_segment_name: The updated log_segment_name Dropdown object
         - segment_id_name_map_str: The map of segment_id to segment_name in JSON string
     """
+    gr.Info("""Please click on the "🔄 Refresh Log Segments Records" button to get the latest log segment records""")
 
     list_log_segment_api_url: str = os.environ.get('LIST_LOG_SEGMENT_API_URL')
 

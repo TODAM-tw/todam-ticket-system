@@ -30,6 +30,8 @@ def get_summarized_ticket_content(
         - token_cost (str): The token cost.
     """
 
+    gr.Info("""Please wait for the model to finish summarizing before operating on the screen! 🙏🏻""")
+
     COST_PER_INPUT_TOKEN : float =  3.00 / 1_000_000
     COST_PER_OUTPUT_TOKEN: float = 15.00 / 1_000_000
 
